@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+     Andrew 的笔记
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="Andrew 的笔记" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      
+<section class="cover">
+    
+      
+      <!-- <a class="forkMe" href="https://github.com/Shen-Yu/hexo-theme-ayer"
+        target="_blank"><img width="149" height="149" src="/images/forkme.png"
+          class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a> -->
+    
+  <div class="cover-frame">
+    <div class="bg-box">
+      <img src="/images/cover1.jpg" alt="image frame" />
+    </div>
+    <div class="cover-inner text-center text-white">
+        
+      <div id="subtitle-box">
+        
+          <!-- <span id="subtitle"><p>无论走到哪里，<br> 都应该记住，<br> 过去都是假的，<br> 回忆是一条没有尽头的路。<br> 一切以往的春天都不复存在，<br> 就连那最坚韧而又狂乱的爱情，<br> 归根结底也不过是转瞬即逝的现实，<br> 唯有孤独永恒。<br> ——加西亚·马尔克斯 </p></span> -->
+          <span id="subtitle">
+            <p style="text-align: left;">无论走到哪里，<br>
+              都应该记住，<br>
+              过去都是假的，<br>
+              回忆是一条没有尽头的路。<br>
+              一切以往的春天都不复存在，<br>
+              就连那最坚韧而又狂乱的爱情，<br>
+              归根结底也不过是转瞬即逝的现实，<br>
+              唯有孤独永恒。<br>
+              </p>
+              <p style="text-align: right;">——加西亚·马尔克斯</p>
+          </span> 
+        
+      </div>
+      <div>
+        
+      </div>
+    </div>
+  </div>
+  <div class="cover-learn-more">
+    <a href="javascript:void(0)" class="anchor"><i class="ri-arrow-down-line"></i></a>
+  </div>
+</section>
+
+
+
+<div id="main">
+  <section class="outer">
+  <article class="articles">
+    
+    
+    
+    
+    <article id="post-java/jvm/jmm" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/02/23/java/jvm/jmm/"
+    >Java 运行机制</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/02/23/java/jvm/jmm/" class="article-date">
+  <time datetime="2020-02-23T09:39:52.000Z" itemprop="datePublished">2020-02-23</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.3k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">8分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h1 id="导读"><a href="#导读" class="headerlink" title=" 导读 "></a><table><tr><font color="#009100"> 导读 </font></tr></table></h1><ol>
+<li>JVM 是什么</li>
+<li>Java 程序执行流程</li>
+<li>Java 类加载器机制</li>
+<li>JIT 工作机制</li>
+</ol>
+<h1 id="JVM-是什么？"><a href="#JVM-是什么？" class="headerlink" title="JVM 是什么？"></a><table><tr><font color="#009100">JVM 是什么？</font></tr></table></h1><p>JVM（Java Virtual Machine） 是模拟执行某种指令集体系结构（ISA）的软件，是对操作系统和硬件的一种抽象（官方文档定义）。</p>
+<p>在硬件和操作系统独立性的技术实现方面，他实现了以下两个方面的功能：</p>
+<ul>
+<li>编译代码，使其占用的空间更小；</li>
+<li>保护用户免受恶意代码的攻击；</li>
+</ul>
+<p>HotSpot JVM 演化过程</p>
+<blockquote>
+<p>SUM HotSpot VM -&gt; Oracle JRockit JVM -&gt; Oracle HotSpot JVM</p>
+</blockquote>
+<h1 id="Java程序的执行流程"><a href="#Java程序的执行流程" class="headerlink" title=" Java程序的执行流程 "></a><table><tr><font color="#009100"> Java程序的执行流程 </font></tr></table></h1><p>Java 程序被编译成为 .class 的字节码，并加载到 JVM 中执行。</p>
+<img src="/2020/02/23/java/jvm/jmm/java_work_flow.png" class>
+
+<p>通过 Java 的运行流程可知。JVM 是程序的运行的基础，通过使用不同平台的 JVM 解决了平台的差异性问题。</p>
+<p><strong>流程概述</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">编写 .java 源文件，并编译成 .class 字节码；</span><br><span class="line">通过 JVM 类加载机制将 .class 类加载到 JVM；</span><br><span class="line">JVM 解释 .class 字节码为机器码；</span><br><span class="line">执行解释后的机器码；</span><br><span class="line">程序运行完成，卸载类；</span><br></pre></td></tr></table></figure>
+
+<p><strong>JVM 的生命周期</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">当启动一个Java程序时，一个虚拟机实例就诞生了。程序关闭或者退出，实例也随之结束。</span><br></pre></td></tr></table></figure>
+
+<h1 id="JVM-是如何工作的"><a href="#JVM-是如何工作的" class="headerlink" title="JVM 是如何工作的?"></a><table><tr><td bgcolor="#00ffff">JVM 是如何工作的?</td></tr></table></h1><p>JVM分为三个子系统</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">类加载器子系统</span><br><span class="line">运行时数据区</span><br><span class="line">执行引擎</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/02/23/java/jvm/jmm/jvm_arch.png" class>
+
+<h2 id="类加载子系统"><a href="#类加载子系统" class="headerlink" title="类加载子系统"></a>类加载子系统</h2><p>Java的动态类加载功能由类加载器子系统处理。在运行时首次引用类时初始化类文件。类的加载是将 .class 文件加载到 JVM 的过程。</p>
+<ul>
+<li>两种触发类加载方式（显示、隐式）：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 显示加载</span></span><br><span class="line">Object obj = <span class="keyword">new</span> Object();</span><br><span class="line"><span class="comment">// 隐示（动态加载）</span></span><br><span class="line">Class clasz = Class.forName(someClassName);</span><br><span class="line">Object obj = clasz.newInstance();</span><br></pre></td></tr></table></figure>
+
+<h3 id="加载（loading）"><a href="#加载（loading）" class="headerlink" title="加载（loading）"></a>加载（loading）</h3><p>Heap 空间生成这个类的对象，方法区生成该类的描述信息，作为这个类的各种数据入口。</p>
+<p>多种类加载器 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">引导类加载(Bootstrap) </span><br><span class="line">	加载JAVA_HOME/lib目录中，被JVM认可的类(-Xbootclasspath可重新指定目录)。</span><br><span class="line"></span><br><span class="line">扩展类加载(Extension) </span><br><span class="line">	加载JAVA_HOME/lib/ext目录中，被JVM认可的类(java.ext.dirs重新指定目录)。</span><br><span class="line"></span><br><span class="line">应用类加载（Application)</span><br><span class="line">	加载用户指定的classpath目录上的类。</span><br><span class="line"></span><br><span class="line">用户自定义类加载(User-Defined)</span><br><span class="line">	用户继承java.lang.ClassLoader，自定义类加载器。</span><br></pre></td></tr></table></figure>
+
+<p>JVM 使用双亲委派机制进行类的加载。</p>
+<p><strong>双亲委派机制</strong>：当一个类收到类加载任务，会先委托父类加载器去完成，只有当父类加载器无法完成加载任务时，才会尝试执行加载任务。</p>
+<img src="/2020/02/23/java/jvm/jmm/classload.png" class>
+
+<h3 id="链接（linking）"><a href="#链接（linking）" class="headerlink" title="链接（linking）"></a>链接（linking）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">验证</span><br><span class="line">	确保Class文件的字节流中包含的信息是否符合当前虚拟机的要求，并且不会危害虚拟机自身的安全。</span><br><span class="line"></span><br><span class="line">准备</span><br><span class="line">	在方法区中分配类变量所使用的内存空间。</span><br><span class="line"></span><br><span class="line">解析</span><br><span class="line">	所有符号内存引用将被来自方法区域的原始引用所替换。</span><br></pre></td></tr></table></figure>
+
+<h3 id="初始化（initialzation）"><a href="#初始化（initialzation）" class="headerlink" title="初始化（initialzation）"></a>初始化（initialzation）</h3><p>初始化过程中，所有静态变量都将被赋初始值，并且静态块和构造器方法也会被执行。<br>以下几种情况不会执行类初始化</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">通过子类引用父类的静态字段，只会触发父类的初始化，而不会触发子类的初始化。</span><br><span class="line">定义对象数组，不会触发该类的初始化。</span><br><span class="line">常量在编译期间会存入调用类的常量池中，本质上并没有直接引用定义常量的类，不会触发定义常量所在的类。</span><br><span class="line">通过类名获取Class对象，不会触发类的初始化。</span><br><span class="line">通过Class.forName加载指定类时，如果指定参数initialize为false时，也不会触发类初始化。</span><br><span class="line">通过ClassLoader默认的loadClass方法，也不会触发初始化动作。</span><br></pre></td></tr></table></figure>
+
+<h2 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h2><p>JVM 运行时的内存主要有五个部分，其中堆和方法区是线程共享的数据区，而程序计数器、Java虚拟机栈和本地方法栈是线程私有的数据区。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">1. 线程共享数据区</span><br><span class="line"></span><br><span class="line">堆(Heap)	</span><br><span class="line"></span><br><span class="line">	堆内存生命周期与 JVM 相同，在线程间共享访问。</span><br><span class="line">	主要存放对象或数组实例。是 GC 的主要对象。  </span><br><span class="line">	当 JVM 申请不到足够内存时，会抛出 OutOfMemoryException。</span><br><span class="line"></span><br><span class="line">	配置参数：-Xms512M -Xmn2048M</span><br><span class="line"></span><br><span class="line">	由于线程共享堆内存，所以在线程安全上主要从两个方面去解决：  </span><br><span class="line">	a. 加锁互斥访问；</span><br><span class="line">	b. 线程本地分配缓冲区(ThreadLocal)； </span><br><span class="line">	</span><br><span class="line">方法区(Method Area)</span><br><span class="line"></span><br><span class="line">	方法区生命周期与 JVM 相同，被多个线程共享。</span><br><span class="line">	主要存放类信息和运行时常量池，每个加载的类都会在方法区形成一个与之对应的类信息的数据结构。  </span><br><span class="line">	包括类名、直接超类、实现的接口列表等。</span><br><span class="line"></span><br><span class="line">	当 JVM 申请不到足够内存时，会抛出 OutOfMemoryException。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2. 线程私有数据区</span><br><span class="line"></span><br><span class="line">程序计数器(Program Counter Register)</span><br><span class="line"></span><br><span class="line">	程序计数器生命周期与线程相同，是线程私有的。  </span><br><span class="line">	若当前正在执行 Java 方法，程序计数器中存放下一条字节码指令的地址。</span><br><span class="line">	程序计数器是唯一一块没有规定会抛异常的区域。</span><br><span class="line"></span><br><span class="line">Java 虚拟机栈(Java Virtual Mathine Stacks)</span><br><span class="line"></span><br><span class="line">	Java 虚拟机栈的生命周期与线程相同，是线程私有的。</span><br><span class="line">	主要存放栈帧(Frame)，用于保存方法调用和返回，存储局部变量和中间结果。</span><br><span class="line"></span><br><span class="line">	配置参数：-Xss320KB</span><br><span class="line">	</span><br><span class="line">	可能会有两种异常：  </span><br><span class="line">	a. StackOverFlowException（栈的深度大于一定的阀值）</span><br><span class="line">	b. OutOfMemoeryException（申请不到足够的内存）</span><br><span class="line"></span><br><span class="line">本地方法栈(Native Method Stacks)</span><br><span class="line"></span><br><span class="line">	本地方法栈生命周期与线程相同，是线程私有的。</span><br><span class="line">	于支持本地方法的调用，也叫做 &#96;C Stack&#96;。</span><br><span class="line">	允许固定大小，或者根据计算需要动态扩容。</span><br><span class="line">	</span><br><span class="line">	可能会有两种异常：  </span><br><span class="line">	a. StackOverFlowException（栈的深度大于一定的阀值）</span><br><span class="line">	b. OutOfMemoeryException（动态扩容下，如果申请不到足够的内存）</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.cnblogs.com/williamjie/p/11089619.html" target="_blank" rel="noopener">JVM详细配置参数</a></p>
+<h2 id="执行引擎"><a href="#执行引擎" class="headerlink" title="执行引擎"></a>执行引擎</h2><p>被分配给运行时数据区的字节码将由执行引擎执行。执行引擎读取字节码并逐个执行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">解释器</span><br><span class="line">	解释器更快地解释字节码，但执行速度很慢。</span><br><span class="line">	解释器的缺点是，当一个方法被多次调用时，每次都需要一个新的解释。</span><br><span class="line"></span><br><span class="line">JIT编译器</span><br><span class="line">	JIT编译器消除了解释器的缺点。</span><br><span class="line">	执行引擎将在转换字节码时使用解释器的帮助，但是当它发现重复的代码时，它使用JIT编译器，JIT编译整个字节码并将其更改为本机代码。</span><br><span class="line">	此本机代码将直接用于重复的方法调用，从而提高系统的性能。</span><br><span class="line"></span><br><span class="line">中间代码生成器</span><br><span class="line">	生成中间代码</span><br><span class="line"></span><br><span class="line">代码优化器</span><br><span class="line">	负责优化上面生成的中间代码</span><br><span class="line"></span><br><span class="line">目标代码生成器</span><br><span class="line">	负责生成机器代码或本地代码</span><br><span class="line"></span><br><span class="line">分析器</span><br><span class="line">	一个特殊的组件，负责寻找热点，即方法是否被多次调用。</span><br><span class="line"></span><br><span class="line">垃圾收集器</span><br><span class="line">	收集和删除未引用的对象。</span><br><span class="line">	可以通过调用 System.gc()触发垃圾收集，但不能保证执行。</span><br><span class="line">	JVM的垃圾收集收集创建的对象。</span><br></pre></td></tr></table></figure>
+
+<h2 id="JIT-工作机制"><a href="#JIT-工作机制" class="headerlink" title="JIT 工作机制"></a>JIT 工作机制</h2><p>JIT (Just In Time) compiler 及时编译器，在运行时，JIT会把翻译后的机器码保存起来，以备下次使用。工作在 .class 字节码到机器码转换的过程。</p>
+<p>工作原理：  </p>
+<img src="/2020/02/23/java/jvm/jmm/jit_process.png" class>
+
+<p>所以 JIT 是通过减少重复翻译机器码来提升性能的。JIT 编译器在运行程序时有两种编译模式可以选择，并且其会在运行时决定使用哪一种以达到最优性能。（这样已经能解决大部分问题，在 JVM 调优中，相对而言需要做的比较少）  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">JVM Server 模式</span><br><span class="line">	由于采用了相对重量级代号为 C2 的编译器，速度较慢，但是一旦运行起来后，性能将会有很大的提升；</span><br><span class="line">JVM Client 模式</span><br><span class="line">	由于采用了轻量的编译器 C1，启动速度快。</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://www.oracle.com/technetwork/java/javase/tech/exactoptions-jsp-141536.html" target="_blank" rel="noopener">了解 JIT 配置参数</a></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a><table><tr><td bgcolor="#00ffff">总结</td></tr></table></h1><p>通过 Java 程序的运行流程，了解到了 JVM 在 Java 运行中的作用。另外摘录了 JVM 相关的知识点，辅助和加强对 JVM 体系结构的认识。本文仅仅是笔记的整理，详细的知识点，还请参考下面的文档。</p>
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a><table><tr><td bgcolor="#00ffff">参考文档</td></tr></table></h1><p><a href="https://www.oracle.com/webfolder/technetwork/tutorials/obe/java/gc01/index.html" target="_blank" rel="noopener">https://www.oracle.com/webfolder/technetwork/tutorials/obe/java/gc01/index.html</a><br><a href="https://www.dynatrace.com/resources/ebooks/javabook/how-garbage-collection-works" target="_blank" rel="noopener">https://www.dynatrace.com/resources/ebooks/javabook/how-garbage-collection-works</a><br><a href="http://www.oracle.com/technetwork/java/javase/tech/exactoptions-jsp-141536.html" target="_blank" rel="noopener">http://www.oracle.com/technetwork/java/javase/tech/exactoptions-jsp-141536.html</a><br><a href="http://openjdk.java.net/jeps/122" target="_blank" rel="noopener">http://openjdk.java.net/jeps/122</a><br><a href="https://javapapers.com/java/java-garbage-collection-introduction" target="_blank" rel="noopener">https://javapapers.com/java/java-garbage-collection-introduction</a><br><a href="https://javapapers.com/java/how-java-garbage-collection-works" target="_blank" rel="noopener">https://javapapers.com/java/how-java-garbage-collection-works</a><br><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/g1_gc_tuning.html" target="_blank" rel="noopener">https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/g1_gc_tuning.html</a><br><a href="https://docs.oracle.com/javase/10/gctuning/factors-affecting-garbage-collection-performance.htm" target="_blank" rel="noopener">https://docs.oracle.com/javase/10/gctuning/factors-affecting-garbage-collection-performance.htm</a><br><a href="https://www.ibm.com/developerworks/cn/java/j-lo-just-in-time/index.html" target="_blank" rel="noopener">https://www.ibm.com/developerworks/cn/java/j-lo-just-in-time/index.html</a><br><a href="https://javainterviewpoint.com/category/java/" target="_blank" rel="noopener">https://javainterviewpoint.com/category/java/</a><br><a href="https://www.cnblogs.com/liululee/archive/2019/09/04/11461998.html" target="_blank" rel="noopener">https://www.cnblogs.com/liululee/archive/2019/09/04/11461998.html</a><br><a href="https://docs.oracle.com/javase/specs/jvms/se10/html/jvms-2.html" target="_blank" rel="noopener">https://docs.oracle.com/javase/specs/jvms/se10/html/jvms-2.html</a><br><a href="https://docs.oracle.com/javase/10/gctuning/toc.htm" target="_blank" rel="noopener">https://docs.oracle.com/javase/10/gctuning/toc.htm</a>  </p>
+
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jvm/" rel="tag">jvm</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
+  </article>
+  
+
+  
+  <nav class="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/7/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" href="/page/9/">下一页</a>
+  </nav>
+  
+</section>
+</div>
+
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2015-2020
+        Andrew
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <span>
+  <i>PV:<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+</span>
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        <!-- 
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+         -->
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+      <aside class="sidebar">
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Andrew 的笔记"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2019/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<script src="/js/share.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  </div>
+</body>
+
+</html>

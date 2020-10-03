@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+     Andrew 的笔记
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="Andrew 的笔记" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      
+<section class="cover">
+    
+      
+      <!-- <a class="forkMe" href="https://github.com/Shen-Yu/hexo-theme-ayer"
+        target="_blank"><img width="149" height="149" src="/images/forkme.png"
+          class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a> -->
+    
+  <div class="cover-frame">
+    <div class="bg-box">
+      <img src="/images/cover1.jpg" alt="image frame" />
+    </div>
+    <div class="cover-inner text-center text-white">
+        
+      <div id="subtitle-box">
+        
+          <!-- <span id="subtitle"><p>无论走到哪里，<br> 都应该记住，<br> 过去都是假的，<br> 回忆是一条没有尽头的路。<br> 一切以往的春天都不复存在，<br> 就连那最坚韧而又狂乱的爱情，<br> 归根结底也不过是转瞬即逝的现实，<br> 唯有孤独永恒。<br> ——加西亚·马尔克斯 </p></span> -->
+          <span id="subtitle">
+            <p style="text-align: left;">无论走到哪里，<br>
+              都应该记住，<br>
+              过去都是假的，<br>
+              回忆是一条没有尽头的路。<br>
+              一切以往的春天都不复存在，<br>
+              就连那最坚韧而又狂乱的爱情，<br>
+              归根结底也不过是转瞬即逝的现实，<br>
+              唯有孤独永恒。<br>
+              </p>
+              <p style="text-align: right;">——加西亚·马尔克斯</p>
+          </span> 
+        
+      </div>
+      <div>
+        
+      </div>
+    </div>
+  </div>
+  <div class="cover-learn-more">
+    <a href="javascript:void(0)" class="anchor"><i class="ri-arrow-down-line"></i></a>
+  </div>
+</section>
+
+
+
+<div id="main">
+  <section class="outer">
+  <article class="articles">
+    
+    
+    
+    
+    <article id="post-list/identityhashmap" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/02/10/list/identityhashmap/"
+    >IdentityHashMap 源码</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/02/10/list/identityhashmap/" class="article-date">
+  <time datetime="2020-02-10T10:52:19.000Z" itemprop="datePublished">2020-02-10</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.5k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">14分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a><table><tr><font color="#009100">概述</font></tr></table></h1><ul>
+<li>IdentityHashMap 使用 hash 表存储数据，实现了 Map 接口。</li>
+<li>与 HashMap 不同的是，IdentityHashMap 使用 <code>引用相等</code> 替换 <code>对象相等</code>；<blockquote>
+<p>也就是说，IdentityHashMap 判断两个 key 相等的方式是 <code>(k1==k2)</code>，<br>而 HashMap 判断两个 key 相等的方式是 <code>(k1==null ? k2==null : k1.equals(k2))</code>；</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="继承结构"><a href="#继承结构" class="headerlink" title="继承结构"></a><table><tr><font color="#009100">继承结构</font></tr></table></h1><p><img src="/2020/02/10/list/identityhashmap/identityhashmap.png" alt="IdentityHashMap继承结构"></p>
+<ul>
+<li>实现了 Map 接口，拥有 Map 特性；</li>
+</ul>
+<h1 id="源码实现"><a href="#源码实现" class="headerlink" title="源码实现"></a><table><tr><font color="#009100">源码实现</font></tr></table></h1><h2 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h2><details>
+<summary><font color="#009100"> View Code </font></summary>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The initial capacity used by the no-args constructor.</span></span><br><span class="line"><span class="comment"> * MUST be a power of two.  The value 32 corresponds to the</span></span><br><span class="line"><span class="comment"> * (specified) expected maximum size of 21, given a load factor</span></span><br><span class="line"><span class="comment"> * of 2/3.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CAPACITY = <span class="number">32</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The minimum capacity, used if a lower value is implicitly specified</span></span><br><span class="line"><span class="comment"> * by either of the constructors with arguments.  The value 4 corresponds</span></span><br><span class="line"><span class="comment"> * to an expected maximum size of 2, given a load factor of 2/3.</span></span><br><span class="line"><span class="comment"> * MUST be a power of two.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MINIMUM_CAPACITY = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The maximum capacity, used if a higher value is implicitly specified</span></span><br><span class="line"><span class="comment"> * by either of the constructors with arguments.</span></span><br><span class="line"><span class="comment"> * MUST be a power of two &lt;= 1&lt;&lt;29.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * In fact, the map can hold no more than MAXIMUM_CAPACITY-1 items</span></span><br><span class="line"><span class="comment"> * because it has to have at least one slot with the key == null</span></span><br><span class="line"><span class="comment"> * in order to avoid infinite loops in get(), put(), remove()</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAXIMUM_CAPACITY = <span class="number">1</span> &lt;&lt; <span class="number">29</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The table, resized as necessary. Length MUST always be a power of two.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">transient</span> Object[] table; <span class="comment">// non-private to simplify nested class access</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The number of key-value mappings contained in this identity hash map.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@serial</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">int</span> size;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The number of modifications, to support fast-fail iterators</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">transient</span> <span class="keyword">int</span> modCount;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Value representing null keys inside tables.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> Object NULL_KEY = <span class="keyword">new</span> Object();</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Use NULL_KEY for key if it is null.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Object <span class="title">maskNull</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (key == <span class="keyword">null</span> ? NULL_KEY : key);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Returns internal representation of null key back to caller as null.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">final</span> Object <span class="title">unmaskNull</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (key == NULL_KEY ? <span class="keyword">null</span> : key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</details>
+
+<ul>
+<li>默认容量：32</li>
+<li>最小容量：4</li>
+<li>最大容量为：1 &lt;&lt; 29<blockquote>
+<p>这里小于 MAXIMUM_CAPACITY-1，是因为它必须有一个 key 等于 null 的位置，<br>为了避免 get,put,remove 方法进入无限循环</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h2><details>
+<summary><font color="#009100"> View Code </font></summary>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Constructs a new, empty identity hash map with a default expected</span></span><br><span class="line"><span class="comment"> * maximum size (21).</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">IdentityHashMap</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    init(DEFAULT_CAPACITY);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Constructs a new, empty map with the specified expected maximum size.</span></span><br><span class="line"><span class="comment"> * Putting more than the expected number of key-value mappings into</span></span><br><span class="line"><span class="comment"> * the map may cause the internal data structure to grow, which may be</span></span><br><span class="line"><span class="comment"> * somewhat time-consuming.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> expectedMaxSize the expected maximum size of the map</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> IllegalArgumentException if &lt;tt&gt;expectedMaxSize&lt;/tt&gt; is negative</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">IdentityHashMap</span><span class="params">(<span class="keyword">int</span> expectedMaxSize)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (expectedMaxSize &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"expectedMaxSize is negative: "</span></span><br><span class="line">                                           + expectedMaxSize);</span><br><span class="line">    init(capacity(expectedMaxSize));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Returns the appropriate capacity for the given expected maximum size.</span></span><br><span class="line"><span class="comment"> * Returns the smallest power of two between MINIMUM_CAPACITY and</span></span><br><span class="line"><span class="comment"> * MAXIMUM_CAPACITY, inclusive, that is greater than (3 *</span></span><br><span class="line"><span class="comment"> * expectedMaxSize)/2, if such a number exists.  Otherwise returns</span></span><br><span class="line"><span class="comment"> * MAXIMUM_CAPACITY.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">capacity</span><span class="params">(<span class="keyword">int</span> expectedMaxSize)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// assert expectedMaxSize &gt;= 0;</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">        (expectedMaxSize &gt; MAXIMUM_CAPACITY / <span class="number">3</span>) ? MAXIMUM_CAPACITY :</span><br><span class="line">        (expectedMaxSize &lt;= <span class="number">2</span> * MINIMUM_CAPACITY / <span class="number">3</span>) ? MINIMUM_CAPACITY :</span><br><span class="line">        Integer.highestOneBit(expectedMaxSize + (expectedMaxSize &lt;&lt; <span class="number">1</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Constructs a new identity hash map containing the keys-value mappings</span></span><br><span class="line"><span class="comment"> * in the specified map.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> m the map whose mappings are to be placed into this map</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> NullPointerException if the specified map is null</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">IdentityHashMap</span><span class="params">(Map&lt;? extends K, ? extends V&gt; m)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Allow for a bit of growth</span></span><br><span class="line">    <span class="keyword">this</span>((<span class="keyword">int</span>) ((<span class="number">1</span> + m.size()) * <span class="number">1.1</span>));</span><br><span class="line">    putAll(m);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</details>
+
+<ul>
+<li>没有指定初始容量，则使用默认的初始容量：32；</li>
+<li>指定期望的初始容量，使用大于期望容量最小 2 的 n 次幂；</li>
+</ul>
+<h2 id="put-K-key-V-value"><a href="#put-K-key-V-value" class="headerlink" title="put(K key, V value)"></a>put(K key, V value)</h2><details>
+<summary><font color="#009100"> View Code </font></summary>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Associates the specified value with the specified key in this identity</span></span><br><span class="line"><span class="comment"> * hash map.  If the map previously contained a mapping for the key, the</span></span><br><span class="line"><span class="comment"> * old value is replaced.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> key the key with which the specified value is to be associated</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> value the value to be associated with the specified key</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the previous value associated with &lt;tt&gt;key&lt;/tt&gt;, or</span></span><br><span class="line"><span class="comment"> *         &lt;tt&gt;null&lt;/tt&gt; if there was no mapping for &lt;tt&gt;key&lt;/tt&gt;.</span></span><br><span class="line"><span class="comment"> *         (A &lt;tt&gt;null&lt;/tt&gt; return can also indicate that the map</span></span><br><span class="line"><span class="comment"> *         previously associated &lt;tt&gt;null&lt;/tt&gt; with &lt;tt&gt;key&lt;/tt&gt;.)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span>     Object#equals(Object)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span>     #get(Object)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span>     #containsKey(Object)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Object k = maskNull(key);</span><br><span class="line"></span><br><span class="line">    retryAfterResize: <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">final</span> Object[] tab = table;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> len = tab.length;</span><br><span class="line">        <span class="keyword">int</span> i = hash(k, len);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (Object item; (item = tab[i]) != <span class="keyword">null</span>;</span><br><span class="line">             i = nextKeyIndex(i, len)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (item == k) &#123;</span><br><span class="line">                <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">                    V oldValue = (V) tab[i + <span class="number">1</span>];</span><br><span class="line">                tab[i + <span class="number">1</span>] = value;</span><br><span class="line">                <span class="keyword">return</span> oldValue;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> s = size + <span class="number">1</span>;</span><br><span class="line">        <span class="comment">// Use optimized form of 3 * s.</span></span><br><span class="line">        <span class="comment">// Next capacity is len, 2 * current capacity.</span></span><br><span class="line">        <span class="comment">// 如果3*size 大于数组的length，则进行扩容</span></span><br><span class="line">        <span class="keyword">if</span> (s + (s &lt;&lt; <span class="number">1</span>) &gt; len &amp;&amp; resize(len))</span><br><span class="line">            <span class="keyword">continue</span> retryAfterResize;</span><br><span class="line"></span><br><span class="line">        modCount++;</span><br><span class="line">        tab[i] = k;</span><br><span class="line">        tab[i + <span class="number">1</span>] = value;</span><br><span class="line">        size = s;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Returns index for Object x.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(Object x, <span class="keyword">int</span> length)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> h = System.identityHashCode(x);</span><br><span class="line">    <span class="comment">// Multiply by -127, and left-shift to use least bit as part of hash</span></span><br><span class="line">    <span class="keyword">return</span> ((h &lt;&lt; <span class="number">1</span>) - (h &lt;&lt; <span class="number">8</span>)) &amp; (length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</details>
+
+<ul>
+<li>put 的时候先通过引用是否相等判断key是不是已经在表中存在，如果存在更新 oldValue 为新的 value，如果元素个数达到阈值，扩容处理，然后再找合适的位置放置 key 和 value；</li>
+<li>在数组的i索引处存key，而紧挨着 i 的 i+1 处存 value，并且由于 hash 方法的原因，key 所对应的 index 全是偶数，自然 i+1 就是奇数了。这也说明了另一点，数组初始化的时候，数组的长度被定义为默认容量的 2 倍，因为数组元素的每次保存是都占了数组的两个位置。</li>
+<li>put 的扩容条件是当存放的数组达到数组长度的 1/3 的时候，就需要扩容。</li>
+<li>System.identityHashCode(x) 是取地址值进行计算；</li>
+</ul>
+<h2 id="get-Object-key"><a href="#get-Object-key" class="headerlink" title="get(Object key)"></a>get(Object key)</h2><details>
+<summary><font color="#009100"> View Code </font></summary>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Returns the value to which the specified key is mapped,</span></span><br><span class="line"><span class="comment"> * or &#123;<span class="doctag">@code</span> null&#125; if this map contains no mapping for the key.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;More formally, if this map contains a mapping from a key</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@code</span> k&#125; to a value &#123;<span class="doctag">@code</span> v&#125; such that &#123;<span class="doctag">@code</span> (key == k)&#125;,</span></span><br><span class="line"><span class="comment"> * then this method returns &#123;<span class="doctag">@code</span> v&#125;; otherwise it returns</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@code</span> null&#125;.  (There can be at most one such mapping.)</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;A return value of &#123;<span class="doctag">@code</span> null&#125; does not &lt;i&gt;necessarily&lt;/i&gt;</span></span><br><span class="line"><span class="comment"> * indicate that the map contains no mapping for the key; it's also</span></span><br><span class="line"><span class="comment"> * possible that the map explicitly maps the key to &#123;<span class="doctag">@code</span> null&#125;.</span></span><br><span class="line"><span class="comment"> * The &#123;<span class="doctag">@link</span> #containsKey containsKey&#125; operation may be used to</span></span><br><span class="line"><span class="comment"> * distinguish these two cases.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> #put(Object, Object)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">get</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    Object k = maskNull(key);</span><br><span class="line">    Object[] tab = table;</span><br><span class="line">    <span class="keyword">int</span> len = tab.length;</span><br><span class="line">    <span class="keyword">int</span> i = hash(k, len);</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        Object item = tab[i];</span><br><span class="line">        <span class="keyword">if</span> (item == k)</span><br><span class="line">            <span class="keyword">return</span> (V) tab[i + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">if</span> (item == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        <span class="comment">// hash 冲突，移位遍历</span></span><br><span class="line">        i = nextKeyIndex(i, len);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Circularly traverses table of size len.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">nextKeyIndex</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (i + <span class="number">2</span> &lt; len ? i + <span class="number">2</span> : <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</details>
+
+<ul>
+<li>如果 i 处找到 key，说明 i+1 处就是索引对应的 value；</li>
+<li>如果 i 处找到的 key 值和传入的 key 不相等，说明 hash 冲突，移动 2 个位置继续查找；</li>
+</ul>
+<h2 id="remove-Object-key"><a href="#remove-Object-key" class="headerlink" title="remove(Object key)"></a>remove(Object key)</h2><details>
+<summary><font color="#009100"> View Code </font></summary>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Removes the mapping for this key from this map if present.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> key key whose mapping is to be removed from the map</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the previous value associated with &lt;tt&gt;key&lt;/tt&gt;, or</span></span><br><span class="line"><span class="comment"> *         &lt;tt&gt;null&lt;/tt&gt; if there was no mapping for &lt;tt&gt;key&lt;/tt&gt;.</span></span><br><span class="line"><span class="comment"> *         (A &lt;tt&gt;null&lt;/tt&gt; return can also indicate that the map</span></span><br><span class="line"><span class="comment"> *         previously associated &lt;tt&gt;null&lt;/tt&gt; with &lt;tt&gt;key&lt;/tt&gt;.)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">remove</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    Object k = maskNull(key);</span><br><span class="line">    Object[] tab = table;</span><br><span class="line">    <span class="keyword">int</span> len = tab.length;</span><br><span class="line">    <span class="keyword">int</span> i = hash(k, len);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        Object item = tab[i];</span><br><span class="line">        <span class="keyword">if</span> (item == k) &#123;</span><br><span class="line">            modCount++;</span><br><span class="line">            size--;</span><br><span class="line">            <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">                V oldValue = (V) tab[i + <span class="number">1</span>];</span><br><span class="line">            tab[i + <span class="number">1</span>] = <span class="keyword">null</span>;</span><br><span class="line">            tab[i] = <span class="keyword">null</span>;</span><br><span class="line">            closeDeletion(i);</span><br><span class="line">            <span class="keyword">return</span> oldValue;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (item == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        i = nextKeyIndex(i, len);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</details>
+
+<ul>
+<li>删除方法与查找方法类似，找到则置空，释放空间；</li>
+</ul>
+<h2 id="resize-int-newCapacity"><a href="#resize-int-newCapacity" class="headerlink" title="resize(int newCapacity)"></a>resize(int newCapacity)</h2><details>
+<summary><font color="#009100"> View Code </font></summary>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Resizes the table if necessary to hold given capacity.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> newCapacity the new capacity, must be a power of two.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> whether a resize did in fact take place</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">resize</span><span class="params">(<span class="keyword">int</span> newCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// assert (newCapacity &amp; -newCapacity) == newCapacity; // power of 2</span></span><br><span class="line">    <span class="keyword">int</span> newLength = newCapacity * <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    Object[] oldTable = table;</span><br><span class="line">    <span class="keyword">int</span> oldLength = oldTable.length;</span><br><span class="line">    <span class="keyword">if</span> (oldLength == <span class="number">2</span> * MAXIMUM_CAPACITY) &#123; <span class="comment">// can't expand any further</span></span><br><span class="line">        <span class="keyword">if</span> (size == MAXIMUM_CAPACITY - <span class="number">1</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Capacity exhausted."</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (oldLength &gt;= newLength)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    Object[] newTable = <span class="keyword">new</span> Object[newLength];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; oldLength; j += <span class="number">2</span>) &#123;</span><br><span class="line">        Object key = oldTable[j];</span><br><span class="line">        <span class="keyword">if</span> (key != <span class="keyword">null</span>) &#123;</span><br><span class="line">            Object value = oldTable[j+<span class="number">1</span>];</span><br><span class="line">            oldTable[j] = <span class="keyword">null</span>;</span><br><span class="line">            oldTable[j+<span class="number">1</span>] = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">int</span> i = hash(key, newLength);</span><br><span class="line">            <span class="keyword">while</span> (newTable[i] != <span class="keyword">null</span>)</span><br><span class="line">                i = nextKeyIndex(i, newLength);</span><br><span class="line">            newTable[i] = key;</span><br><span class="line">            newTable[i + <span class="number">1</span>] = value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    table = newTable;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</details>
+
+<ul>
+<li>扩容的数组是原来的两倍；</li>
+</ul>
+<h2 id="hashCode-amp-equals-Object-o"><a href="#hashCode-amp-equals-Object-o" class="headerlink" title="hashCode() &amp; equals(Object o)"></a>hashCode() &amp; equals(Object o)</h2><details>
+<summary><font color="#009100"> View Code </font></summary>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Returns the hash code value for this map.  The hash code of a map is</span></span><br><span class="line"><span class="comment"> * defined to be the sum of the hash codes of each entry in the map's</span></span><br><span class="line"><span class="comment"> * &lt;tt&gt;entrySet()&lt;/tt&gt; view.  This ensures that &lt;tt&gt;m1.equals(m2)&lt;/tt&gt;</span></span><br><span class="line"><span class="comment"> * implies that &lt;tt&gt;m1.hashCode()==m2.hashCode()&lt;/tt&gt; for any two</span></span><br><span class="line"><span class="comment"> * &lt;tt&gt;IdentityHashMap&lt;/tt&gt; instances &lt;tt&gt;m1&lt;/tt&gt; and &lt;tt&gt;m2&lt;/tt&gt;, as</span></span><br><span class="line"><span class="comment"> * required by the general contract of &#123;<span class="doctag">@link</span> Object#hashCode&#125;.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;&lt;b&gt;Owing to the reference-equality-based semantics of the</span></span><br><span class="line"><span class="comment"> * &lt;tt&gt;Map.Entry&lt;/tt&gt; instances in the set returned by this map's</span></span><br><span class="line"><span class="comment"> * &lt;tt&gt;entrySet&lt;/tt&gt; method, it is possible that the contractual</span></span><br><span class="line"><span class="comment"> * requirement of &lt;tt&gt;Object.hashCode&lt;/tt&gt; mentioned in the previous</span></span><br><span class="line"><span class="comment"> * paragraph will be violated if one of the two objects being compared is</span></span><br><span class="line"><span class="comment"> * an &lt;tt&gt;IdentityHashMap&lt;/tt&gt; instance and the other is a normal map.&lt;/b&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the hash code value for this map</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> Object#equals(Object)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> #equals(Object)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">    Object[] tab = table;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; tab.length; i +=<span class="number">2</span>) &#123;</span><br><span class="line">        Object key = tab[i];</span><br><span class="line">        <span class="keyword">if</span> (key != <span class="keyword">null</span>) &#123;</span><br><span class="line">            Object k = unmaskNull(key);</span><br><span class="line">            result += System.identityHashCode(k) ^</span><br><span class="line">                      System.identityHashCode(tab[i + <span class="number">1</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Compares the specified object with this map for equality.  Returns</span></span><br><span class="line"><span class="comment"> * &lt;tt&gt;true&lt;/tt&gt; if the given object is also a map and the two maps</span></span><br><span class="line"><span class="comment"> * represent identical object-reference mappings.  More formally, this</span></span><br><span class="line"><span class="comment"> * map is equal to another map &lt;tt&gt;m&lt;/tt&gt; if and only if</span></span><br><span class="line"><span class="comment"> * &lt;tt&gt;this.entrySet().equals(m.entrySet())&lt;/tt&gt;.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;&lt;b&gt;Owing to the reference-equality-based semantics of this map it is</span></span><br><span class="line"><span class="comment"> * possible that the symmetry and transitivity requirements of the</span></span><br><span class="line"><span class="comment"> * &lt;tt&gt;Object.equals&lt;/tt&gt; contract may be violated if this map is compared</span></span><br><span class="line"><span class="comment"> * to a normal map.  However, the &lt;tt&gt;Object.equals&lt;/tt&gt; contract is</span></span><br><span class="line"><span class="comment"> * guaranteed to hold among &lt;tt&gt;IdentityHashMap&lt;/tt&gt; instances.&lt;/b&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  o object to be compared for equality with this map</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> &lt;tt&gt;true&lt;/tt&gt; if the specified object is equal to this map</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> Object#equals(Object)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (o == <span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (o <span class="keyword">instanceof</span> IdentityHashMap) &#123;</span><br><span class="line">        IdentityHashMap&lt;?,?&gt; m = (IdentityHashMap&lt;?,?&gt;) o;</span><br><span class="line">        <span class="keyword">if</span> (m.size() != size)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">        Object[] tab = m.table;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; tab.length; i+=<span class="number">2</span>) &#123;</span><br><span class="line">            Object k = tab[i];</span><br><span class="line">            <span class="keyword">if</span> (k != <span class="keyword">null</span> &amp;&amp; !containsMapping(k, tab[i + <span class="number">1</span>]))</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (o <span class="keyword">instanceof</span> Map) &#123;</span><br><span class="line">        Map&lt;?,?&gt; m = (Map&lt;?,?&gt;)o;</span><br><span class="line">        <span class="keyword">return</span> entrySet().equals(m.entrySet());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;  <span class="comment">// o is not a Map</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</details>
+
+<ul>
+<li>IdentityHashMap 重写了 equals 和 hashcode 方法，通过 System.identityHashCode 方法来实现的 hashCode ，确保使用地址值来判断；</li>
+<li>通过重写 equals 方法，判定只有 key 值全等情况下才会判断 value 值相等；</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a><table><tr><font color="#009100">总结</font></tr></table></h1><ul>
+<li>IdentityHashMap 的实现不同于 HashMap，虽然也是数组，不过 IdentityHashMap 中没有用到链表，解决冲突的方式是计算下一个有效索引，并且将数据 key 和 value 紧挨着存在map中，即 table[i]=key，那么 table[i+1]=value。</li>
+<li>IdentityHashMap 的 hash 的计算没有使用 Object 的 hashCode 方法，而是使用的 System.identityHashCode 方法，这是根据对象的内存地址来计算散列码。</li>
+</ul>
+
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IdentityHashMap/" rel="tag">IdentityHashMap</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
+  </article>
+  
+
+  
+  <nav class="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/12/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" href="/page/14/">下一页</a>
+  </nav>
+  
+</section>
+</div>
+
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2015-2020
+        Andrew
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <span>
+  <i>PV:<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+</span>
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        <!-- 
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+         -->
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+      <aside class="sidebar">
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Andrew 的笔记"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2019/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<script src="/js/share.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  </div>
+</body>
+
+</html>

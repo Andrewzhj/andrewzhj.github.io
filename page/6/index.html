@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+     Andrew 的笔记
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="Andrew 的笔记" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      
+<section class="cover">
+    
+      
+      <!-- <a class="forkMe" href="https://github.com/Shen-Yu/hexo-theme-ayer"
+        target="_blank"><img width="149" height="149" src="/images/forkme.png"
+          class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a> -->
+    
+  <div class="cover-frame">
+    <div class="bg-box">
+      <img src="/images/cover1.jpg" alt="image frame" />
+    </div>
+    <div class="cover-inner text-center text-white">
+        
+      <div id="subtitle-box">
+        
+          <!-- <span id="subtitle"><p>无论走到哪里，<br> 都应该记住，<br> 过去都是假的，<br> 回忆是一条没有尽头的路。<br> 一切以往的春天都不复存在，<br> 就连那最坚韧而又狂乱的爱情，<br> 归根结底也不过是转瞬即逝的现实，<br> 唯有孤独永恒。<br> ——加西亚·马尔克斯 </p></span> -->
+          <span id="subtitle">
+            <p style="text-align: left;">无论走到哪里，<br>
+              都应该记住，<br>
+              过去都是假的，<br>
+              回忆是一条没有尽头的路。<br>
+              一切以往的春天都不复存在，<br>
+              就连那最坚韧而又狂乱的爱情，<br>
+              归根结底也不过是转瞬即逝的现实，<br>
+              唯有孤独永恒。<br>
+              </p>
+              <p style="text-align: right;">——加西亚·马尔克斯</p>
+          </span> 
+        
+      </div>
+      <div>
+        
+      </div>
+    </div>
+  </div>
+  <div class="cover-learn-more">
+    <a href="javascript:void(0)" class="anchor"><i class="ri-arrow-down-line"></i></a>
+  </div>
+</section>
+
+
+
+<div id="main">
+  <section class="outer">
+  <article class="articles">
+    
+    
+    
+    
+    <article id="post-flink/coding/essink" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/08/10/flink/coding/essink/"
+    >ElasticSearch Sink 源码</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/08/10/flink/coding/essink/" class="article-date">
+  <time datetime="2020-08-10T09:52:19.000Z" itemprop="datePublished">2020-08-10</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">949字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">5分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h1 id="Maven-引用"><a href="#Maven-引用" class="headerlink" title="Maven 引用"></a><table><tr><font color="#009100">Maven 引用</font></tr></table></h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.flink<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>flink-connector-elasticsearch5_2.11<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.5.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="Java-调用方式"><a href="#Java-调用方式" class="headerlink" title="Java 调用方式"></a><table><tr><font color="#009100">Java 调用方式</font></tr></table></h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">List&lt;InetSocketAddress&gt; transportAddresses = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        String clusterNodes = YmlReader.getValue(<span class="string">"es.cluster.nodes"</span>);</span><br><span class="line">        <span class="keyword">for</span>( String clusterNode : clusterNodes.split( <span class="string">","</span> )) &#123;</span><br><span class="line">            String hostName = clusterNode.substring( <span class="number">0</span>,clusterNode.indexOf( <span class="string">":"</span> ) );</span><br><span class="line">            String port = clusterNode.substring( clusterNode.indexOf( <span class="string">":"</span> )+<span class="number">1</span>, clusterNode.length());</span><br><span class="line">            log.info( <span class="string">"adding transport node : "</span> + clusterNode );</span><br><span class="line">            transportAddresses.add(<span class="keyword">new</span> InetSocketAddress( InetAddress.getByName(hostName), Integer.valueOf(port)));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        log.error(e.getMessage(), e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Map&lt;String, String&gt; userConfig;</span><br><span class="line">    userConfig = <span class="keyword">new</span> HashMap&lt;&gt;(<span class="number">7</span>);</span><br><span class="line">    userConfig.put(<span class="string">"cluster.name"</span>, YmlReader.getValue(<span class="string">"es.cluster.name"</span>));</span><br><span class="line">    userConfig.put(<span class="string">"bulk.flush.max.actions"</span>, <span class="string">"1000"</span>);</span><br><span class="line">    userConfig.put(<span class="string">"bulk.flush.max.size.mb"</span>, <span class="string">"4"</span>);</span><br><span class="line">    userConfig.put(<span class="string">"bulk.flush.interval.ms"</span>, <span class="string">"60000"</span>);</span><br><span class="line"></span><br><span class="line">    ActionRequestFailureHandler failureHandler = (ActionRequestFailureHandler) (action, failure, i, indexer) -&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (ExceptionUtils.findThrowable(failure, EsRejectedExecutionException<span class="class">.<span class="keyword">class</span>).<span class="title">isPresent</span>()) </span>&#123;</span><br><span class="line">            <span class="comment">// 请求数据被拒绝，添加到队列重试</span></span><br><span class="line">            indexer.add(<span class="keyword">new</span> ActionRequest[]&#123;action&#125;);</span><br><span class="line">            log.error(<span class="string">"es reject, action: &#123;&#125;"</span>, action);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ExceptionUtils.findThrowable(failure, VersionConflictEngineException<span class="class">.<span class="keyword">class</span>).<span class="title">isPresent</span>()) </span>&#123;</span><br><span class="line">            <span class="comment">// 版本冲突</span></span><br><span class="line">            log.info(<span class="string">"version conflict, action: &#123;&#125;"</span>, action);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ExceptionUtils.findThrowable(failure, ElasticsearchParseException<span class="class">.<span class="keyword">class</span>).<span class="title">isPresent</span>()) </span>&#123;</span><br><span class="line">            <span class="comment">// 解析异常处理</span></span><br><span class="line">            log.info(<span class="string">"parse exception, action: &#123;&#125;"</span>, action);</span><br><span class="line">            <span class="keyword">throw</span> failure;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            log.info(<span class="string">"todo action: &#123;&#125;"</span>, action);</span><br><span class="line">            <span class="keyword">throw</span> failure;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    ElasticsearchSinkFunction elasticsearchSinkFunction = (o, runtimeContext, requestIndexer) -&gt; &#123;</span><br><span class="line">        String dateStr = LocalDateTimeUtils.formatToString(o.getStmsInsertTime(), LocalDateTimeUtils.DATE_FORMAT_YM);</span><br><span class="line">        String indexName = ElasticConstants.PICKUP_NETWORK_DETAIL + ElasticConstants.SPLIT +  dateStr;</span><br><span class="line">        String indexType = ElasticConstants.PICKUP_NETWORK_DETAIL;</span><br><span class="line"></span><br><span class="line">        IndexRequest indexRequest = Requests.indexRequest()</span><br><span class="line">                .index(indexName)</span><br><span class="line">                .type(indexType)</span><br><span class="line">                .id(o.getUniqueId())</span><br><span class="line">                .source(JSON.toJSONString(o));</span><br><span class="line">        indexRequest.versionType(VersionType.EXTERNAL_GTE);</span><br><span class="line">        indexRequest.version(o.getStmsUpdateTime().getTime());</span><br><span class="line">        requestIndexer.add(indexRequest);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">new</span> ElasticsearchSink&lt;&gt;(userConfig, transportAddresses, elasticsearchSinkFunction, failureHandler);</span><br></pre></td></tr></table></figure>
+
+<h1 id="继承结构"><a href="#继承结构" class="headerlink" title="继承结构"></a><table><tr><font color="#009100">继承结构</font></tr></table></h1><p><img src="/2020/08/10/flink/coding/essink/essinkstructure.png" alt="ElasticsearchSink 继承结构"></p>
+<ul>
+<li><p>继承 <code>ElasticsearchSinkBase</code> 类</p>
+<blockquote>
+<p>主要实现类</p>
+</blockquote>
+</li>
+<li><p>继承 <code>RichSinkFunction&lt;T&gt;</code> 类</p>
+<blockquote>
+<p>实现 flink sink <code>open(Configuration parameters)</code>，<code>close()</code> 方法</p>
+</blockquote>
+</li>
+<li><p>实现了 <code>CheckpointedFunction</code> 接口</p>
+<blockquote>
+<p>实现快照的初始化，快照存储；</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="源码实现"><a href="#源码实现" class="headerlink" title="源码实现"></a><table><tr><font color="#009100">源码实现</font></tr></table></h1><h2 id="ElasticsearchSink-类"><a href="#ElasticsearchSink-类" class="headerlink" title="ElasticsearchSink 类"></a>ElasticsearchSink 类</h2><p>两种构造方式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Creates a new &#123;<span class="doctag">@code</span> ElasticsearchSink&#125; that connects to the cluster using a &#123;<span class="doctag">@link</span> TransportClient&#125;.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> userConfig The map of user settings that are used when constructing the &#123;<span class="doctag">@link</span> TransportClient&#125; and &#123;<span class="doctag">@link</span> BulkProcessor&#125;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> transportAddresses The addresses of Elasticsearch nodes to which to connect using a &#123;<span class="doctag">@link</span> TransportClient&#125;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> elasticsearchSinkFunction This is used to generate multiple &#123;<span class="doctag">@link</span> ActionRequest&#125; from the incoming element</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ElasticsearchSink</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	Map&lt;String, String&gt; userConfig,</span></span></span><br><span class="line"><span class="function"><span class="params">	List&lt;InetSocketAddress&gt; transportAddresses,</span></span></span><br><span class="line"><span class="function"><span class="params">	ElasticsearchSinkFunction&lt;T&gt; elasticsearchSinkFunction)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">this</span>(userConfig, transportAddresses, elasticsearchSinkFunction, <span class="keyword">new</span> NoOpFailureHandler());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Creates a new &#123;<span class="doctag">@code</span> ElasticsearchSink&#125; that connects to the cluster using a &#123;<span class="doctag">@link</span> TransportClient&#125;.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> userConfig The map of user settings that are used when constructing the &#123;<span class="doctag">@link</span> TransportClient&#125; and &#123;<span class="doctag">@link</span> BulkProcessor&#125;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> transportAddresses The addresses of Elasticsearch nodes to which to connect using a &#123;<span class="doctag">@link</span> TransportClient&#125;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> elasticsearchSinkFunction This is used to generate multiple &#123;<span class="doctag">@link</span> ActionRequest&#125; from the incoming element</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> failureHandler This is used to handle failed &#123;<span class="doctag">@link</span> ActionRequest&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ElasticsearchSink</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">	Map&lt;String, String&gt; userConfig,</span></span></span><br><span class="line"><span class="function"><span class="params">	List&lt;InetSocketAddress&gt; transportAddresses,</span></span></span><br><span class="line"><span class="function"><span class="params">	ElasticsearchSinkFunction&lt;T&gt; elasticsearchSinkFunction,</span></span></span><br><span class="line"><span class="function"><span class="params">	ActionRequestFailureHandler failureHandler)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">super</span>(<span class="keyword">new</span> Elasticsearch5ApiCallBridge(transportAddresses), userConfig, elasticsearchSinkFunction, failureHandler);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>NoOpFailureHandler</code> 方式不处理异常，数据写入过程中如果发生异常，直接向上抛出，阻塞现成的执行；</li>
+<li><code>ActionRequestFailureHandler</code> 自定义异常数据处理，对不同的异常，针对性地做抛出、阻塞等；</li>
+</ul>
+<h2 id="ElasticsearchSinkBase-类"><a href="#ElasticsearchSinkBase-类" class="headerlink" title="ElasticsearchSinkBase 类"></a>ElasticsearchSinkBase 类</h2><h2 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// es BulkProcessor API 参数配置</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CONFIG_KEY_BULK_FLUSH_MAX_ACTIONS = <span class="string">"bulk.flush.max.actions"</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CONFIG_KEY_BULK_FLUSH_MAX_SIZE_MB = <span class="string">"bulk.flush.max.size.mb"</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CONFIG_KEY_BULK_FLUSH_INTERVAL_MS = <span class="string">"bulk.flush.interval.ms"</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CONFIG_KEY_BULK_FLUSH_BACKOFF_ENABLE = <span class="string">"bulk.flush.backoff.enable"</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CONFIG_KEY_BULK_FLUSH_BACKOFF_TYPE = <span class="string">"bulk.flush.backoff.type"</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CONFIG_KEY_BULK_FLUSH_BACKOFF_RETRIES = <span class="string">"bulk.flush.backoff.retries"</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CONFIG_KEY_BULK_FLUSH_BACKOFF_DELAY = <span class="string">"bulk.flush.backoff.delay"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// BulkProcessor 一个批次的最大索引数量</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Integer bulkProcessorFlushMaxActions;</span><br><span class="line"><span class="comment">// BulkProcessor 一个批次的最大容量（MB）</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Integer bulkProcessorFlushMaxSizeMb;</span><br><span class="line"><span class="comment">// BulkProcessor flush 时间间隔（millis）</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Integer bulkProcessorFlushIntervalMillis;</span><br><span class="line"><span class="comment">// BulkProcessor flush 策略</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> ElasticsearchSinkBase.BulkFlushBackoffPolicy bulkProcessorFlushBackoffPolicy;</span><br><span class="line"><span class="comment">// 用户定义的 es 配置</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, String&gt; userConfig;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> ElasticsearchSinkFunction&lt;T&gt; elasticsearchSinkFunction;</span><br><span class="line"><span class="comment">// flush 异常处理</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> ActionRequestFailureHandler failureHandler;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> flushOnCheckpoint = <span class="keyword">true</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">transient</span> BulkProcessorIndexer requestIndexer;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> ElasticsearchApiCallBridge callBridge;</span><br><span class="line"><span class="comment">// 最大请求等待数量</span></span><br><span class="line"><span class="keyword">private</span> AtomicLong numPendingRequests = <span class="keyword">new</span> AtomicLong(<span class="number">0L</span>);</span><br><span class="line"><span class="comment">// es client</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">transient</span> Client client;</span><br><span class="line"><span class="comment">// es BulkProcessor</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">transient</span> BulkProcessor bulkProcessor;</span><br><span class="line"><span class="comment">// 请求异常堆栈</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> AtomicReference&lt;Throwable&gt; failureThrowable = <span class="keyword">new</span> AtomicReference();</span><br></pre></td></tr></table></figure>
+<ul>
+<li>es 数据的写入是基于 <code>BulkProcessor</code> 实现的</li>
+</ul>
+<blockquote>
+<ul>
+<li>实现 <code>snapshotState(FunctionSnapshotContext context)</code> 方法，请求检查点快照时调用； <code>FunctionInitializationContext</code> 执行初始化， <code>FunctionSnapshotContext</code> 调用；</li>
+<li>实现 <code>initializeState(FunctionInitializationContext context)</code> 方法，当分布式执行并行函数初始化的时候调用，通常再此方法设置状态存储的数据结构；</li>
+</ul>
+</blockquote>
+<h2 id><a href="#" class="headerlink" title></a></h2>
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/elasticsearch/" rel="tag">elasticsearch</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fink/" rel="tag">fink</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sink/" rel="tag">sink</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+  
+  
+
+  
+
+</article>
+    
+  </article>
+  
+
+  
+  <nav class="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/5/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" href="/page/7/">下一页</a>
+  </nav>
+  
+</section>
+</div>
+
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2015-2020
+        Andrew
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <span>
+  <i>PV:<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+</span>
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        <!-- 
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+         -->
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+      <aside class="sidebar">
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Andrew 的笔记"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2019/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<script src="/js/share.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  </div>
+</body>
+
+</html>

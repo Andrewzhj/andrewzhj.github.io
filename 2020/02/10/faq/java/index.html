@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Java FAQ |  Andrew 的笔记
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="Andrew 的笔记" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-faq/java" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Java FAQ
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/02/10/faq/java/" class="article-date">
+  <time datetime="2020-02-10T09:52:19.000Z" itemprop="datePublished">2020-02-10</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.2k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">7分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h1 id="非线程安全集合"><a href="#非线程安全集合" class="headerlink" title="非线程安全集合"></a><table><tr><font color="#009100">非线程安全集合</font></tr></table></h1><h2 id="java-util-包下的非线程安全集合"><a href="#java-util-包下的非线程安全集合" class="headerlink" title="java.util 包下的非线程安全集合"></a>java.util 包下的非线程安全集合</h2><h2 id="1-ArrayList与LinkedList的实现和区别？"><a href="#1-ArrayList与LinkedList的实现和区别？" class="headerlink" title="1. ArrayList与LinkedList的实现和区别？"></a>1. ArrayList与LinkedList的实现和区别？</h2><blockquote>
+<ul>
+<li>结构上的区别：<br>　　　ArrayList是实现了基于动态数组的数据结构，LinkedList基于链表的数据结构。</li>
+<li>性能上的区别：</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>  <strong>查询</strong><br>  ArrayList是随机访问(random access)策略，而LinkedList是不支持快速的随机访问的（访问链表中的某个元素时，就必须从链表的一端开始沿着连接方向一个一个元素地去查找，直到找到所需的元素为止）。对一个LinkedList做随机访问所消耗的时间与这个表的大小是成比例的。而相应的，在ArrayList中进行随机访问所消耗的时间是固定的。 </p>
+</blockquote>
+<blockquote>
+<p>  <strong>增删</strong><br>  1). 若只对单条数据插入或删除，ArrayList的速度反而优于LinkedList。<br>  2). 若是批量插入或删除数据：<br>　　ArrayList 是基于数组实现的，而数组是一块连续的内存空间，当在表的前面或中间插入或删除元素时，所有已经存在的元素都会后移，这就意味着数据移动和复制上的开销，当在表的后面插入或删除元素时，ArrayList和LinkedList数据量小时速度相差无几，但数据量较大时ArrayList的速度快。在末尾插入或删除数据，arraylist的速度比linkedlist的速度反而要快。注：其实在前方插入时，ArrayList可以使用后方插入，最后再使用Collections.reverse()方法反转，速度比LinkedList快。<br>　　　LinkedList 插入或删除数据则只是简单的未这个元素分配一个记录，然后调整两个连接，在表的尾端插入数据与在任意位置插入数据是一样的，不会因为插入的位置靠前而导致插入的方法性能降低。<br>　　　遍历列表：最简便的ForEach循环并没有很好的性能表现，综合性能不如普通的迭代器，而是用for循环通过随机访问遍历列表时，ArrayList表项很好，但是LinkedList的表现却无法让人接受，甚至没有办法等待程序的结束。这是因为对LinkedList进行随机访问时，总会进行一次列表的遍历操作。性能非常差，应避免使用。</p>
+</blockquote>
+<blockquote>
+<p><strong>总结：</strong><br>　　1、在ArrayList的 中间插入或删除一个元素意味着这个列表中剩余的元素都会被移动；而在LinkedList的中间插入或删除一个元素的开销是固定的。<br>　　2、ArrayList的空间浪费主要体现在在list列表的结尾预留一定的容量空间，而LinkedList的空间花费则体现在它的每一个元素都需要消耗相当的空间。<br>　　3、LinkedList不支持高效的随机元素访问。<br>　　4、ArrayList的查询效率比较高，增删动作的效率比较差，适用于查询比较频繁，增删动作较少的元素管理的集合。<br>　　　LinkedList的查询效率低，但是增删效率很高。适用于增删动作的比较频繁，查询次数较少的元素管理集合。</p>
+</blockquote>
+<h2 id="2-HashMap-数据结构-hash冲突如何解决（链表和红黑树-扩容时机-扩容时避免rehash的优化"><a href="#2-HashMap-数据结构-hash冲突如何解决（链表和红黑树-扩容时机-扩容时避免rehash的优化" class="headerlink" title="2. HashMap 数据结构? hash冲突如何解决（链表和红黑树)? 扩容时机? 扩容时避免rehash的优化?"></a>2. HashMap 数据结构? hash冲突如何解决（链表和红黑树)? 扩容时机? 扩容时避免rehash的优化?</h2><blockquote>
+<ul>
+<li>HashMap是一种散列表，采用（数组 + 链表 + 红黑树）的存储结构</li>
+<li>hash冲突时，使用链表和红黑树来解决</li>
+<li>设置好初始化容量，初始容量（expectedSize / 0.75F + 1.0F）</li>
+</ul>
+</blockquote>
+<h2 id="3-LinkedHashMap-基本原理？-哪两种有序？-如何用来实现-LRU-缓存策略？"><a href="#3-LinkedHashMap-基本原理？-哪两种有序？-如何用来实现-LRU-缓存策略？" class="headerlink" title="3. LinkedHashMap 基本原理？ 哪两种有序？ 如何用来实现 LRU 缓存策略？"></a>3. LinkedHashMap 基本原理？ 哪两种有序？ 如何用来实现 LRU 缓存策略？</h2><blockquote>
+<ul>
+<li>LinkedHashMap可以看成是 LinkedList + HashMap</li>
+<li>LinkedHashMap继承HashMap，拥有HashMap的所有特性，并且额外增加了按一定顺序访问的特性</li>
+<li>如果accessOrder为false，则可以按插入元素的顺序遍历元素</li>
+<li>如果accessOrder为true，则可以按访问元素的顺序遍历元素</li>
+<li>如果accessOrder为true，就可以实现了 LRU 缓存策略</li>
+</ul>
+</blockquote>
+<h2 id="4-TreeMap-数据结构？key对象为什么必须要实现Compare接口？-如何用它实现一致性哈希？"><a href="#4-TreeMap-数据结构？key对象为什么必须要实现Compare接口？-如何用它实现一致性哈希？" class="headerlink" title="4. TreeMap 数据结构？key对象为什么必须要实现Compare接口？ 如何用它实现一致性哈希？"></a>4. TreeMap 数据结构？key对象为什么必须要实现Compare接口？ 如何用它实现一致性哈希？</h2><blockquote>
+<ul>
+<li>TreeMap的存储结构是一棵红黑树</li>
+<li>TreeMap中的元素是有序的，按key的顺序排列</li>
+<li>tailMap 方法可以找到大于等于目标 key 的元素，利用这一特性，可以实现一致性哈希</li>
+</ul>
+</blockquote>
+<h1 id="线程安全集合"><a href="#线程安全集合" class="headerlink" title="线程安全集合"></a><table><tr><font color="#009100">线程安全集合</font></tr></table></h1><h2 id="java-util-concurrent-包下的线程安全集合"><a href="#java-util-concurrent-包下的线程安全集合" class="headerlink" title="java.util.concurrent 包下的线程安全集合"></a>java.util.concurrent 包下的线程安全集合</h2><hr>
+<p>title: Java FAQ<br>date: 2020-02-10 17:52:19<br>comments: true #是否可评论<br>toc: true #是否显示文章目录<br>categories: Java<br>tags: [Java, faq]</p>
+<hr>
+<h1 id="非线程安全集合-1"><a href="#非线程安全集合-1" class="headerlink" title="非线程安全集合"></a><table><tr><font color="#009100">非线程安全集合</font></tr></table></h1><h2 id="java-util-包下的非线程安全集合-1"><a href="#java-util-包下的非线程安全集合-1" class="headerlink" title="java.util 包下的非线程安全集合"></a>java.util 包下的非线程安全集合</h2><h2 id="1-ArrayList与LinkedList的实现和区别？-1"><a href="#1-ArrayList与LinkedList的实现和区别？-1" class="headerlink" title="1. ArrayList与LinkedList的实现和区别？"></a>1. ArrayList与LinkedList的实现和区别？</h2><blockquote>
+<ul>
+<li>结构上的区别：<br>　　　ArrayList是实现了基于动态数组的数据结构，LinkedList基于链表的数据结构。</li>
+<li>性能上的区别：</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>  <strong>查询</strong><br>  ArrayList是随机访问(random access)策略，而LinkedList是不支持快速的随机访问的（访问链表中的某个元素时，就必须从链表的一端开始沿着连接方向一个一个元素地去查找，直到找到所需的元素为止）。对一个LinkedList做随机访问所消耗的时间与这个表的大小是成比例的。而相应的，在ArrayList中进行随机访问所消耗的时间是固定的。 </p>
+</blockquote>
+<blockquote>
+<p>  <strong>增删</strong><br>  1). 若只对单条数据插入或删除，ArrayList的速度反而优于LinkedList。<br>  2). 若是批量插入或删除数据：<br>　　ArrayList 是基于数组实现的，而数组是一块连续的内存空间，当在表的前面或中间插入或删除元素时，所有已经存在的元素都会后移，这就意味着数据移动和复制上的开销，当在表的后面插入或删除元素时，ArrayList和LinkedList数据量小时速度相差无几，但数据量较大时ArrayList的速度快。在末尾插入或删除数据，arraylist的速度比linkedlist的速度反而要快。注：其实在前方插入时，ArrayList可以使用后方插入，最后再使用Collections.reverse()方法反转，速度比LinkedList快。<br>　　　LinkedList 插入或删除数据则只是简单的未这个元素分配一个记录，然后调整两个连接，在表的尾端插入数据与在任意位置插入数据是一样的，不会因为插入的位置靠前而导致插入的方法性能降低。<br>　　　遍历列表：最简便的ForEach循环并没有很好的性能表现，综合性能不如普通的迭代器，而是用for循环通过随机访问遍历列表时，ArrayList表项很好，但是LinkedList的表现却无法让人接受，甚至没有办法等待程序的结束。这是因为对LinkedList进行随机访问时，总会进行一次列表的遍历操作。性能非常差，应避免使用。</p>
+</blockquote>
+<blockquote>
+<p><strong>总结：</strong><br>　　1、在ArrayList的 中间插入或删除一个元素意味着这个列表中剩余的元素都会被移动；而在LinkedList的中间插入或删除一个元素的开销是固定的。<br>　　2、ArrayList的空间浪费主要体现在在list列表的结尾预留一定的容量空间，而LinkedList的空间花费则体现在它的每一个元素都需要消耗相当的空间。<br>　　3、LinkedList不支持高效的随机元素访问。<br>　　4、ArrayList的查询效率比较高，增删动作的效率比较差，适用于查询比较频繁，增删动作较少的元素管理的集合。<br>　　　LinkedList的查询效率低，但是增删效率很高。适用于增删动作的比较频繁，查询次数较少的元素管理集合。</p>
+</blockquote>
+<h2 id="2-HashMap-数据结构-hash冲突如何解决（链表和红黑树-扩容时机-扩容时避免rehash的优化-1"><a href="#2-HashMap-数据结构-hash冲突如何解决（链表和红黑树-扩容时机-扩容时避免rehash的优化-1" class="headerlink" title="2. HashMap 数据结构? hash冲突如何解决（链表和红黑树)? 扩容时机? 扩容时避免rehash的优化?"></a>2. HashMap 数据结构? hash冲突如何解决（链表和红黑树)? 扩容时机? 扩容时避免rehash的优化?</h2><blockquote>
+<ul>
+<li>HashMap是一种散列表，采用（数组 + 链表 + 红黑树）的存储结构</li>
+<li>hash冲突时，使用链表和红黑树来解决</li>
+<li>设置好初始化容量，初始容量（expectedSize / 0.75F + 1.0F）</li>
+</ul>
+</blockquote>
+<h2 id="3-LinkedHashMap-基本原理？-哪两种有序？-如何用来实现-LRU-缓存策略？-1"><a href="#3-LinkedHashMap-基本原理？-哪两种有序？-如何用来实现-LRU-缓存策略？-1" class="headerlink" title="3. LinkedHashMap 基本原理？ 哪两种有序？ 如何用来实现 LRU 缓存策略？"></a>3. LinkedHashMap 基本原理？ 哪两种有序？ 如何用来实现 LRU 缓存策略？</h2><blockquote>
+<ul>
+<li>LinkedHashMap可以看成是 LinkedList + HashMap</li>
+<li>LinkedHashMap继承HashMap，拥有HashMap的所有特性，并且额外增加了按一定顺序访问的特性</li>
+<li>如果accessOrder为false，则可以按插入元素的顺序遍历元素</li>
+<li>如果accessOrder为true，则可以按访问元素的顺序遍历元素</li>
+<li>如果accessOrder为true，就可以实现了 LRU 缓存策略</li>
+</ul>
+</blockquote>
+<h2 id="4-TreeMap-数据结构？key对象为什么必须要实现Compare接口？-如何用它实现一致性哈希？-1"><a href="#4-TreeMap-数据结构？key对象为什么必须要实现Compare接口？-如何用它实现一致性哈希？-1" class="headerlink" title="4. TreeMap 数据结构？key对象为什么必须要实现Compare接口？ 如何用它实现一致性哈希？"></a>4. TreeMap 数据结构？key对象为什么必须要实现Compare接口？ 如何用它实现一致性哈希？</h2><blockquote>
+<ul>
+<li>TreeMap的存储结构是一棵红黑树</li>
+<li>TreeMap中的元素是有序的，按key的顺序排列</li>
+<li>tailMap 方法可以找到大于等于目标 key 的元素，利用这一特性，可以实现一致性哈希</li>
+</ul>
+</blockquote>
+<h1 id="线程安全集合-1"><a href="#线程安全集合-1" class="headerlink" title="线程安全集合"></a><table><tr><font color="#009100">线程安全集合</font></tr></table></h1><h2 id="java-util-concurrent-包下的线程安全集合-1"><a href="#java-util-concurrent-包下的线程安全集合-1" class="headerlink" title="java.util.concurrent 包下的线程安全集合"></a>java.util.concurrent 包下的线程安全集合</h2>
+      
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+        <div class="declare">
+          <ul class="post-copyright">
+            <li>
+              <i class="ri-copyright-line"></i>
+              <strong>版权声明： </strong s>
+              本博客所有文章除特别声明外，均采用 <a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="external nofollow"
+                target="_blank">Apache License 2.0</a> 许可协议。转载请注明出处！
+            </li>
+          </ul>
+        </div>
+        
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://yoursite.com/2020/02/10/faq/java/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/faq/" rel="tag">faq</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2020/02/10/hbase-java/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            hbase java编程
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/02/10/algorithm/bubble-sort/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Bubble Sort</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: '',
+        app_key: '',
+        path: window.location.pathname,
+        notify: 'false',
+        verify: 'false',
+        avatar: 'mp',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2015-2020
+        Andrew
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <span>
+  <i>PV:<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+</span>
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        <!-- 
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+         -->
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+      <aside class="sidebar">
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Andrew 的笔记"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2019/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<script src="/js/share.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer:'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+    onClick: (e) => {
+      $('.toc-link').removeClass('is-active-link');
+      $(`a[href=${e.target.hash}]`).addClass('is-active-link');
+      $(e.target.hash).scrollIntoView();
+      return false;
+    }
+  });
+</script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  </div>
+</body>
+
+</html>

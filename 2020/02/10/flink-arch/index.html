@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    初识flink |  Andrew 的笔记
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="Andrew 的笔记" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-flink-arch" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  初识flink
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/02/10/flink-arch/" class="article-date">
+  <time datetime="2020-02-10T09:52:19.000Z" itemprop="datePublished">2020-02-10</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">7分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h1 id="导读"><a href="#导读" class="headerlink" title="导读"></a><table><tr><td bgcolor="#00ffff">导读</td></tr></table></h1><ol>
+<li>flink 是怎样诞生的，有什么样的历史？</li>
+<li>在大数据数据架构中，flink 扮演什么角色？</li>
+<li>flink 是什么，有什么样的基础架构？</li>
+<li>怎么理解 flink 的状态？</li>
+</ol>
+<h1 id="flink的历史"><a href="#flink的历史" class="headerlink" title="flink的历史"></a><table><tr><td bgcolor="#00ffff">flink的历史</td></tr></table></h1><ul>
+<li><p><strong>2010</strong><br>  柏林工业大学、柏林洪堡大学、哈索普拉特纳研究所 联合发起的研究项目 [Stratosphere: Information Management on the Cloud]</p>
+</li>
+<li><p><strong>2014</strong><br>  Stratosphere 更名为 Flink，并成为 Apache Software Fundation 顶级项目。<br>  Stratosphere 的核心成员创立 Data Artisans 公司，主要业务是将 Stratosphere 实现商业化，为企业提供大数据的解决方案。</p>
+</li>
+<li><p><strong>2015</strong><br>  Alibaba 对 Flink 进行改造，Blink 诞生。</p>
+</li>
+<li><p><strong>2019</strong><br>  Alibaba Blink 开源。<br>  Alibaba 收购 Data Artisans。</p>
+</li>
+</ul>
+<h1 id="数据架构的演变"><a href="#数据架构的演变" class="headerlink" title="数据架构的演变"></a><table><tr><td bgcolor="#00ffff">数据架构的演变</td></tr></table></h1><p>从数据架构的演变了解 flink 产生的背景。</p>
+<h2 id="传统数据基础架构"><a href="#传统数据基础架构" class="headerlink" title="传统数据基础架构"></a>传统数据基础架构</h2><p><strong>传统单体数据架构（Monolithic Architecture）</strong>： 集中式数据存储。</p>
+<img src="/2020/02/10/flink-arch/monolithic_arch.png" class>
+
+<blockquote>
+<p>单体应用前期效率高，随着业务的增加，系统越来越难以维护和升级。<br>引入微服务架构，解决业务扩展的问题。</p>
+</blockquote>
+<p><strong>微服务架构（Microservices Architecture）</strong>：一个应用由多个小的、相互独立的微服务组成。数据分开存储，开发和部署没有依赖。</p>
+<img src="/2020/02/10/flink-arch/microservice_arch.png" class>
+
+<blockquote>
+<p>业务交易数据过于分散，难以集中化管理（数据分析或者数据挖掘之类的需求）。<br>将数据同步到数据仓库中，在数据仓库中进行数据的抽取、转换、加载（ETL），从而构建成不同的数据集市和应用。</p>
+</blockquote>
+<h2 id="大数据数据架构"><a href="#大数据数据架构" class="headerlink" title="大数据数据架构"></a>大数据数据架构</h2><p>Lambda架构是由Storm的作者Nathan Marz提出的一个实时大数据处理框架。Marz在Twitter工作期间开发了著名的实时大数据处理框架Storm，Lambda架构是其根据多年进行分布式大数据系统的经验总结提炼而成。</p>
+<img src="/2020/02/10/flink-arch/lambda_arch.png" class>
+
+<p><strong>Lambda架构关键特性</strong></p>
+<ul>
+<li><p>Robust and fault-tolerant（容错性和鲁棒性）</p>
+<blockquote>
+<p>人和机器的错误都有可能导致系统宕机，让系统能够从错误中快速恢复尤其重要。</p>
+</blockquote>
+</li>
+<li><p>Low latency reads and updates（低延时）</p>
+<blockquote>
+<p>很多应用对于读和写操作的延时要求非常高，要求对更新和查询的响应是低延时的。</p>
+</blockquote>
+</li>
+<li><p>Scalable（横向扩容）</p>
+<blockquote>
+<p>当数据量/负载增大时，可扩展性的系统通过增加更多的机器资源来维持性能。也就是常说的系统需要线性可扩展，通常采用scale out（通过增加机器的个数）而不是scale up（通过增强机器的性能）。</p>
+</blockquote>
+</li>
+<li><p>General（通用性）</p>
+<blockquote>
+<p>系统需要能够适应广泛的应用，包括金融领域、社交网络、电子商务数据分析等。</p>
+</blockquote>
+</li>
+<li><p>Extensible（可扩展）</p>
+<blockquote>
+<p>需要增加新功能、新特性时，可扩展的系统能以最小的开发代价来增加新功能。</p>
+</blockquote>
+</li>
+<li><p>Allows ad hoc queries（方便查询）</p>
+<blockquote>
+<p>数据中蕴含有价值，需要能够方便、快速的查询出所需要的数据。</p>
+</blockquote>
+</li>
+<li><p>Minimal maintenance（易于维护）</p>
+<blockquote>
+<p>系统要想做到易于维护，其关键是控制其复杂性，越是复杂的系统越容易出错、越难维护。</p>
+</blockquote>
+</li>
+<li><p>Debuggable（易调试）</p>
+<blockquote>
+<p>当出问题时，系统需要有足够的信息来调试错误，找到问题的根源。其关键是能够追根溯源到每个数据生成点。</p>
+</blockquote>
+</li>
+</ul>
+<p><a href="https://jiang-hao.com/articles/2019/big-data-lambda-architecture.html" target="_blank" rel="noopener">Lambda架构推荐文档</a><br><a href="https://docs.aws.amazon.com/lambda/latest/dg/welcome.html" target="_blank" rel="noopener">AWS Lambda 服务文档</a></p>
+<h2 id="有状态流计算架构"><a href="#有状态流计算架构" class="headerlink" title="有状态流计算架构"></a>有状态流计算架构</h2><p>在数据产生的过程中，进行计算，并直接产生结果。必须满足高性能、高吞吐、低延时等多目标。</p>
+<img src="/2020/02/10/flink-arch/state_arch.png" class>
+
+<p>Lambda 架构使数据与计算分离，而在实时计算层，对技术有了更高的要求。flink 正是满足了高吞吐、低延迟、高性能、高容错等特性，应运而生。</p>
+<h2 id="流数据处理产品对比"><a href="#流数据处理产品对比" class="headerlink" title="流数据处理产品对比"></a>流数据处理产品对比</h2><table>
+<thead>
+<tr>
+<th align="center">产品</th>
+<th align="center">模型</th>
+<th align="center">API</th>
+<th align="center">保证次数</th>
+<th align="center">容错机制</th>
+<th align="center">状态管理</th>
+<th align="center">延时</th>
+<th align="center">吞吐量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Storm</td>
+<td align="center">Native<br>(数据进入立即处理)</td>
+<td align="center">组合式<br>(基础API)</td>
+<td align="center">At-least-once</td>
+<td align="center">Record Acks(Ack机制)</td>
+<td align="center">无</td>
+<td align="center">Low</td>
+<td align="center">Low</td>
+</tr>
+<tr>
+<td align="center">Spark Stream</td>
+<td align="center">mirco-batching<br>(微批量处理)</td>
+<td align="center">声明式<br>(封装后的高阶函数)</td>
+<td align="center">Exectly-once</td>
+<td align="center">RDD Checkpoint(基于RDD checkpoint)</td>
+<td align="center">基于DStream</td>
+<td align="center">Medium</td>
+<td align="center">High</td>
+</tr>
+<tr>
+<td align="center">Flink</td>
+<td align="center">Native<br>(数据进入立即处理)</td>
+<td align="center">声明式<br>(封装后的高阶函数)</td>
+<td align="center">Exectly-once</td>
+<td align="center">Checkpoint(flink的快照)</td>
+<td align="center">基于操作</td>
+<td align="center">Low</td>
+<td align="center">High</td>
+</tr>
+</tbody></table>
+<h1 id="flink-是什么？"><a href="#flink-是什么？" class="headerlink" title="flink 是什么？"></a><table><tr><td bgcolor="#00ffff">flink 是什么？</td></tr></table></h1><p><strong>flink</strong>：数据流上有状态的计算</p>
+<p><img src="https://zhisheng-blog.oss-cn-hangzhou.aliyuncs.com/images/WI7lRD.jpg" alt></p>
+<p><strong>flink优势</strong></p>
+<ul>
+<li><p>同时支持高吞吐、低延迟、高性能</p>
+<blockquote>
+<p>相对于 Spark Stream、Storm</p>
+</blockquote>
+</li>
+<li><p>支持事件时间概念（Event Time）</p>
+<blockquote>
+<p>针对窗口计算</p>
+</blockquote>
+</li>
+<li><p>支持有状态计算（State）</p>
+<blockquote>
+<p>状态：算子计算的中间结果。<br>新的事件进入算子，可以从之前的状态中获取中间结果来计算当前的结果。</p>
+</blockquote>
+</li>
+<li><p>支持高度灵活的窗口计算（Window）</p>
+<blockquote>
+<p>对流数据进行一定范围的计算。</p>
+</blockquote>
+</li>
+<li><p>基于轻量级分布式快照实现的容错（Snapshot）</p>
+<blockquote>
+<p>CheckPoint</p>
+</blockquote>
+</li>
+<li><p>基于JVM实现独立的内存管理</p>
+<blockquote>
+<p>flink实现了自身内存管理机制，尽可能地减少JVM GC对系统的影响。</p>
+</blockquote>
+</li>
+<li><p>保存点（Save Points）</p>
+<blockquote>
+<p>任务执行快照保存在存储介质，任务重启时从Save Points恢复原有的计算状态。</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="flink-应用场景"><a href="#flink-应用场景" class="headerlink" title="flink 应用场景"></a><table><tr><td bgcolor="#00ffff">flink 应用场景</td></tr></table></h1><h2 id="事件驱动（Event-driven）"><a href="#事件驱动（Event-driven）" class="headerlink" title="事件驱动（Event-driven）"></a>事件驱动（Event-driven）</h2><p><img src="https://flink.apache.org/img/usecases-eventdrivenapps.png" alt></p>
+<p>复杂事件处理</p>
+<h2 id="数据分析（Data-Analytics）"><a href="#数据分析（Data-Analytics）" class="headerlink" title="数据分析（Data Analytics）"></a>数据分析（Data Analytics）</h2><p><img src="https://flink.apache.org/img/usecases-analytics.png" alt></p>
+<p>实时大屏、实时报表、实时欺诈检测</p>
+<h2 id="数据管道（Data-Pipeline）"><a href="#数据管道（Data-Pipeline）" class="headerlink" title="数据管道（Data Pipeline）"></a>数据管道（Data Pipeline）</h2><p><img src="https://flink.apache.org/img/usecases-datapipelines.png" alt></p>
+<p>实时智能推荐系统、实时数仓</p>
+<p><a href="https://flink.apache.org/zh/usecases.html" target="_blank" rel="noopener">官方中文文档</a><br><a href="https://flink.apache.org/usecases.html" target="_blank" rel="noopener">官方英文文档</a></p>
+<h1 id="flink-基础架构"><a href="#flink-基础架构" class="headerlink" title="flink 基础架构"></a><table><tr><td bgcolor="#00ffff">flink 基础架构</td></tr></table></h1><p><img src="https://zhisheng-blog.oss-cn-hangzhou.aliyuncs.com/images/sMDTgD.jpg" alt></p>
+<p>flink 的核心组件和运行时组件</p>
+<h2 id="基本组件"><a href="#基本组件" class="headerlink" title="基本组件"></a>基本组件</h2><p><img src="https://ci.apache.org/projects/flink/flink-docs-release-1.9/fig/stack.png" alt></p>
+<p>从上往下：</p>
+<ul>
+<li><p>API &amp; Libraries 层</p>
+<blockquote>
+<p>提供批处理和流处理接口，同时在此基础上抽象出不同的应用类型的组件库。</p>
+</blockquote>
+</li>
+<li><p>Runtime 核心层</p>
+<blockquote>
+<p>主要负责对上层不同接口提供基础服务。<br>支持分布式 Stream 作业的执行、JobGraph 到 ExecutionGraph 的映射转换、任务调度等。<br>将 DataStream 和 DataSet 转成统一的可执行的 Task Operator，达到在流式引擎下同时处理批量计算和流式计算的目的。</p>
+</blockquote>
+</li>
+<li><p>物理部署层</p>
+<blockquote>
+<p>flink 部署模式，目前支持本地、集群（Standalone/YARN）、云（GCE/EC2）、Kubenetes。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="运行时环境"><a href="#运行时环境" class="headerlink" title="运行时环境"></a>运行时环境</h2><p>运行时两种类型的程序：JobManagers（Masters）、TaskManagers（Workers）</p>
+<p><img src="https://ci.apache.org/projects/flink/flink-docs-release-1.9/fig/processes.svg" alt></p>
+<ul>
+<li><p>JobManagers</p>
+<blockquote>
+<p>  负责整个 Flink 集群任务调度及资源的管理。JobManagers 和 TaskManagers 之间通过 Actor System 进行通信。组件之间的通信是基于 Akka Framework 实现。 </p>
+</blockquote>
+</li>
+<li><p>TaskManagers</p>
+<blockquote>
+<p>  负责具体的任务执行和对应的任务在每个节点上的资源申请与管理。<br>  flink 的任务运行采用的是多线程的方式，在多个任务和 Task 之间通过 TaskSlot 方式共享系统资源，每个 TaskManager 中管理多个 TaskSlot 资源池。</p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<h3 id="Tasks、Operator-Chains"><a href="#Tasks、Operator-Chains" class="headerlink" title="Tasks、Operator Chains"></a>Tasks、Operator Chains</h3><p>在分布式执行程序中，Operator Chains 将 subtasks 连接在 Tasks 中。每一个 Task 由一个线程执行。</p>
+<p><img src="https://ci.apache.org/projects/flink/flink-docs-release-1.10/fig/tasks_chains.svg" alt></p>
+<hr>
+<h3 id="Task-Slots、Resources"><a href="#Task-Slots、Resources" class="headerlink" title="Task Slots、Resources"></a>Task Slots、Resources</h3><p>Task Slots、Subtasks、TaskManage之间的关系</p>
+<p><img src="https://ci.apache.org/projects/flink/flink-docs-release-1.10/fig/tasks_slots.svg" alt></p>
+<blockquote>
+<p>Taskmanage 是一个独立的 JVM 程序，Subtasks 在独立的线程中执行，Task Slots（任务槽）控制着多少个任务可以被执行。Slots 保留并管理内存空间，但是并没有独立的 CPU 。</p>
+</blockquote>
+<p><strong>Task Slots 任务槽资源共享</strong></p>
+<p><img src="https://ci.apache.org/projects/flink/flink-docs-release-1.10/fig/slot_sharing.svg" alt></p>
+<p>Task Slots 资源共享有两个好处：</p>
+<blockquote>
+<ul>
+<li>不需要计算一个程序总共包含多少个任务。</li>
+<li>可以更好地利用资源。（非密集型子任务和资源密集型窗口子任务）</li>
+</ul>
+</blockquote>
+<hr>
+<h3 id="State-Backends"><a href="#State-Backends" class="headerlink" title="State Backends"></a>State Backends</h3><p><img src="https://ci.apache.org/projects/flink/flink-docs-release-1.10/fig/checkpoints.svg" alt></p>
+<blockquote>
+<p>State Backends 决定了state如何被存储、访问和维持。它的主要职责是本地 state 管理和checkpoint state到远程。在管理方面，可选择将 state 存储到内存还是磁盘。</p>
+</blockquote>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a><table><tr><td bgcolor="#00ffff">总结</td></tr></table></h1><h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a><table><tr><td bgcolor="#00ffff">参考文档</td></tr></table></h1><p><a href="https://ci.apache.org/projects/flink/flink-docs-release-1.10/concepts/runtime.html" target="_blank" rel="noopener">https://ci.apache.org/projects/flink/flink-docs-release-1.10/concepts/runtime.html</a><br>《Flink原理、实践与性能优化》— 机械工业出版社、张利兵著<br><a href="https://www.cnblogs.com/code2one/p/10123112.html" target="_blank" rel="noopener">https://www.cnblogs.com/code2one/p/10123112.html</a><br><a href="http://www.54tianzhisheng.cn/2018/10/13/flink-introduction/" target="_blank" rel="noopener">http://www.54tianzhisheng.cn/2018/10/13/flink-introduction/</a><br><a href="https://jiang-hao.com/articles/2019/big-data-lambda-architecture.html" target="_blank" rel="noopener">https://jiang-hao.com/articles/2019/big-data-lambda-architecture.html</a><br><a href="https://blog.csdn.net/github_39577257/article/details/94230550" target="_blank" rel="noopener">https://blog.csdn.net/github_39577257/article/details/94230550</a></p>
+
+      
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+        <div class="declare">
+          <ul class="post-copyright">
+            <li>
+              <i class="ri-copyright-line"></i>
+              <strong>版权声明： </strong s>
+              本博客所有文章除特别声明外，均采用 <a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="external nofollow"
+                target="_blank">Apache License 2.0</a> 许可协议。转载请注明出处！
+            </li>
+          </ul>
+        </div>
+        
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://yoursite.com/2020/02/10/flink-arch/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/" rel="tag">flink</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2020/02/10/list/weakhashmap/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            WeakHashMap
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/02/10/hbase-java/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">hbase java编程</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: '',
+        app_key: '',
+        path: window.location.pathname,
+        notify: 'false',
+        verify: 'false',
+        avatar: 'mp',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2015-2020
+        Andrew
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <span>
+  <i>PV:<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+</span>
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        <!-- 
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+         -->
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+      <aside class="sidebar">
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Andrew 的笔记"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2019/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<script src="/js/share.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer:'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+    onClick: (e) => {
+      $('.toc-link').removeClass('is-active-link');
+      $(`a[href=${e.target.hash}]`).addClass('is-active-link');
+      $(e.target.hash).scrollIntoView();
+      return false;
+    }
+  });
+</script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  </div>
+</body>
+
+</html>
