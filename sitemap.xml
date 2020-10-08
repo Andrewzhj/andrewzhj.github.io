@@ -2,16 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yoursite.com/2020/02/10/list/properties/</loc>
+    <loc>http://yoursite.com/2020/02/10/list/treeset/</loc>
     
-    <lastmod>2020-10-03T13:02:47.705Z</lastmod>
+    <lastmod>2020-10-08T01:41:07.139Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yoursite.com/2020/02/10/list/treeset/</loc>
+    <loc>http://yoursite.com/2020/02/10/list/linkedlist/</loc>
     
-    <lastmod>2020-10-03T07:36:34.493Z</lastmod>
+    <lastmod>2020-10-08T01:41:07.139Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2020/02/10/list/hashtable/</loc>
+    
+    <lastmod>2020-10-08T01:41:07.137Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2020/02/10/list/properties/</loc>
+    
+    <lastmod>2020-10-03T13:02:47.705Z</lastmod>
     
   </url>
   
@@ -58,13 +72,6 @@
   </url>
   
   <url>
-    <loc>http://yoursite.com/2020/02/10/list/linkedlist/</loc>
-    
-    <lastmod>2020-10-03T02:00:11.451Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://yoursite.com/2020/02/10/list/linkedhashset/</loc>
     
     <lastmod>2020-10-03T02:00:11.450Z</lastmod>
@@ -73,13 +80,6 @@
   
   <url>
     <loc>http://yoursite.com/2020/02/10/list/identityhashmap/</loc>
-    
-    <lastmod>2020-10-03T02:00:11.449Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2020/02/10/list/hashtable/</loc>
     
     <lastmod>2020-10-03T02:00:11.449Z</lastmod>
     

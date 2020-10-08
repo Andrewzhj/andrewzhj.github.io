@@ -81,7 +81,7 @@
     
     
     
-    <article id="post-algorithm/bubble-sort" class="article article-type-post" itemscope
+    <article id="post-faq/java" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -89,8 +89,8 @@
     <header class="article-header">
        
 <h2 itemprop="name">
-  <a class="article-title" href="/2020/02/10/algorithm/bubble-sort/"
-    >Bubble Sort</a
+  <a class="article-title" href="/2020/02/10/faq/java/"
+    >Java FAQ</a
   >
 </h2>
   
@@ -100,7 +100,7 @@
 
     
     <div class="article-meta">
-      <a href="/2020/02/10/algorithm/bubble-sort/" class="article-date">
+      <a href="/2020/02/10/faq/java/" class="article-date">
   <time datetime="2020-02-10T09:52:19.000Z" itemprop="datePublished">2020-02-10</time>
 </a>
       
@@ -115,7 +115,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">238字</span>
+            <span class="post-count">2.2k字</span>
         </span>
     </span>
 
@@ -124,7 +124,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">1分钟</span>
+            <span class="post-count">7分钟</span>
         </span>
     </span>
 </div>
@@ -143,20 +143,86 @@
       
 
       
-      <h1 id="冒泡排序实现思路"><a href="#冒泡排序实现思路" class="headerlink" title="冒泡排序实现思路"></a><table><tr><font color="#009100">冒泡排序实现思路</font></tr></table></h1><ol>
-<li>将序列中所有元素两两比较，将最大的放在最后面。</li>
-<li>将剩余序列中所有元素两两比较，将最大的放在最后面。</li>
-<li>重复第二步，直到只剩下一个数。</li>
-</ol>
-<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a><table><tr><font color="#009100">代码实现</font></tr></table></h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">bubbleSort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> tmp;</span><br><span class="line">    <span class="keyword">int</span> length = arr.length;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;length-<span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;length - i -<span class="number">1</span>; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (arr[j] &gt; arr[j+<span class="number">1</span>]) &#123;</span><br><span class="line">                tmp = arr[j+<span class="number">1</span>];</span><br><span class="line">                arr[j+<span class="number">1</span>] = arr[j];</span><br><span class="line">                arr[j] = tmp;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bubbleSort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">boolean</span> swapped = <span class="keyword">true</span>;</span><br><span class="line">  <span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">int</span> tmp;</span><br><span class="line">  <span class="keyword">while</span> (swapped) &#123;</span><br><span class="line">        swapped = <span class="keyword">false</span>;</span><br><span class="line">        j++;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr.length - j; i++) &#123;                                       </span><br><span class="line">              <span class="keyword">if</span> (arr[i] &gt; arr[i + <span class="number">1</span>]) &#123;                          </span><br><span class="line">                    tmp = arr[i];</span><br><span class="line">                    arr[i] = arr[i + <span class="number">1</span>];</span><br><span class="line">                    arr[i + <span class="number">1</span>] = tmp;</span><br><span class="line">                    swapped = <span class="keyword">true</span>;</span><br><span class="line">              &#125;</span><br><span class="line">        &#125;                </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://pic3.zhimg.com/v2-33a947c71ad62b254cab62e5364d2813_b.gif" alt="动画效果"></p>
-<p><a href="http://www.jsons.cn/sort/" target="_blank" rel="noopener">动画演示</a></p>
-<h1 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a><table><tr><font color="#009100">复杂度分析</font></tr></table></h1><p>最好的情况下（完全正序）复杂度是 O(1)；最糟糕的情况下（完全倒序），复杂度是 O(n^2)</p>
-<h1 id="参阅文档"><a href="#参阅文档" class="headerlink" title="参阅文档"></a><table><tr><font color="#009100">参阅文档</font></tr></table></h1><p><a href="http://www.algolist.net/Algorithms/Sorting/Bubble_sort" target="_blank" rel="noopener">http://www.algolist.net/Algorithms/Sorting/Bubble_sort</a></p>
-
+      <h1 id="非线程安全集合"><a href="#非线程安全集合" class="headerlink" title="非线程安全集合"></a><table><tr><font color="#009100">非线程安全集合</font></tr></table></h1><h2 id="java-util-包下的非线程安全集合"><a href="#java-util-包下的非线程安全集合" class="headerlink" title="java.util 包下的非线程安全集合"></a>java.util 包下的非线程安全集合</h2><h2 id="1-ArrayList与LinkedList的实现和区别？"><a href="#1-ArrayList与LinkedList的实现和区别？" class="headerlink" title="1. ArrayList与LinkedList的实现和区别？"></a>1. ArrayList与LinkedList的实现和区别？</h2><blockquote>
+<ul>
+<li>结构上的区别：<br>　　　ArrayList是实现了基于动态数组的数据结构，LinkedList基于链表的数据结构。</li>
+<li>性能上的区别：</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>  <strong>查询</strong><br>  ArrayList是随机访问(random access)策略，而LinkedList是不支持快速的随机访问的（访问链表中的某个元素时，就必须从链表的一端开始沿着连接方向一个一个元素地去查找，直到找到所需的元素为止）。对一个LinkedList做随机访问所消耗的时间与这个表的大小是成比例的。而相应的，在ArrayList中进行随机访问所消耗的时间是固定的。 </p>
+</blockquote>
+<blockquote>
+<p>  <strong>增删</strong><br>  1). 若只对单条数据插入或删除，ArrayList的速度反而优于LinkedList。<br>  2). 若是批量插入或删除数据：<br>　　ArrayList 是基于数组实现的，而数组是一块连续的内存空间，当在表的前面或中间插入或删除元素时，所有已经存在的元素都会后移，这就意味着数据移动和复制上的开销，当在表的后面插入或删除元素时，ArrayList和LinkedList数据量小时速度相差无几，但数据量较大时ArrayList的速度快。在末尾插入或删除数据，arraylist的速度比linkedlist的速度反而要快。注：其实在前方插入时，ArrayList可以使用后方插入，最后再使用Collections.reverse()方法反转，速度比LinkedList快。<br>　　　LinkedList 插入或删除数据则只是简单的未这个元素分配一个记录，然后调整两个连接，在表的尾端插入数据与在任意位置插入数据是一样的，不会因为插入的位置靠前而导致插入的方法性能降低。<br>　　　遍历列表：最简便的ForEach循环并没有很好的性能表现，综合性能不如普通的迭代器，而是用for循环通过随机访问遍历列表时，ArrayList表项很好，但是LinkedList的表现却无法让人接受，甚至没有办法等待程序的结束。这是因为对LinkedList进行随机访问时，总会进行一次列表的遍历操作。性能非常差，应避免使用。</p>
+</blockquote>
+<blockquote>
+<p><strong>总结：</strong><br>　　1、在ArrayList的 中间插入或删除一个元素意味着这个列表中剩余的元素都会被移动；而在LinkedList的中间插入或删除一个元素的开销是固定的。<br>　　2、ArrayList的空间浪费主要体现在在list列表的结尾预留一定的容量空间，而LinkedList的空间花费则体现在它的每一个元素都需要消耗相当的空间。<br>　　3、LinkedList不支持高效的随机元素访问。<br>　　4、ArrayList的查询效率比较高，增删动作的效率比较差，适用于查询比较频繁，增删动作较少的元素管理的集合。<br>　　　LinkedList的查询效率低，但是增删效率很高。适用于增删动作的比较频繁，查询次数较少的元素管理集合。</p>
+</blockquote>
+<h2 id="2-HashMap-数据结构-hash冲突如何解决（链表和红黑树-扩容时机-扩容时避免rehash的优化"><a href="#2-HashMap-数据结构-hash冲突如何解决（链表和红黑树-扩容时机-扩容时避免rehash的优化" class="headerlink" title="2. HashMap 数据结构? hash冲突如何解决（链表和红黑树)? 扩容时机? 扩容时避免rehash的优化?"></a>2. HashMap 数据结构? hash冲突如何解决（链表和红黑树)? 扩容时机? 扩容时避免rehash的优化?</h2><blockquote>
+<ul>
+<li>HashMap是一种散列表，采用（数组 + 链表 + 红黑树）的存储结构</li>
+<li>hash冲突时，使用链表和红黑树来解决</li>
+<li>设置好初始化容量，初始容量（expectedSize / 0.75F + 1.0F）</li>
+</ul>
+</blockquote>
+<h2 id="3-LinkedHashMap-基本原理？-哪两种有序？-如何用来实现-LRU-缓存策略？"><a href="#3-LinkedHashMap-基本原理？-哪两种有序？-如何用来实现-LRU-缓存策略？" class="headerlink" title="3. LinkedHashMap 基本原理？ 哪两种有序？ 如何用来实现 LRU 缓存策略？"></a>3. LinkedHashMap 基本原理？ 哪两种有序？ 如何用来实现 LRU 缓存策略？</h2><blockquote>
+<ul>
+<li>LinkedHashMap可以看成是 LinkedList + HashMap</li>
+<li>LinkedHashMap继承HashMap，拥有HashMap的所有特性，并且额外增加了按一定顺序访问的特性</li>
+<li>如果accessOrder为false，则可以按插入元素的顺序遍历元素</li>
+<li>如果accessOrder为true，则可以按访问元素的顺序遍历元素</li>
+<li>如果accessOrder为true，就可以实现了 LRU 缓存策略</li>
+</ul>
+</blockquote>
+<h2 id="4-TreeMap-数据结构？key对象为什么必须要实现Compare接口？-如何用它实现一致性哈希？"><a href="#4-TreeMap-数据结构？key对象为什么必须要实现Compare接口？-如何用它实现一致性哈希？" class="headerlink" title="4. TreeMap 数据结构？key对象为什么必须要实现Compare接口？ 如何用它实现一致性哈希？"></a>4. TreeMap 数据结构？key对象为什么必须要实现Compare接口？ 如何用它实现一致性哈希？</h2><blockquote>
+<ul>
+<li>TreeMap的存储结构是一棵红黑树</li>
+<li>TreeMap中的元素是有序的，按key的顺序排列</li>
+<li>tailMap 方法可以找到大于等于目标 key 的元素，利用这一特性，可以实现一致性哈希</li>
+</ul>
+</blockquote>
+<h1 id="线程安全集合"><a href="#线程安全集合" class="headerlink" title="线程安全集合"></a><table><tr><font color="#009100">线程安全集合</font></tr></table></h1><h2 id="java-util-concurrent-包下的线程安全集合"><a href="#java-util-concurrent-包下的线程安全集合" class="headerlink" title="java.util.concurrent 包下的线程安全集合"></a>java.util.concurrent 包下的线程安全集合</h2><hr>
+<p>title: Java FAQ<br>date: 2020-02-10 17:52:19<br>comments: true #是否可评论<br>toc: true #是否显示文章目录<br>categories: Java<br>tags: [Java, faq]</p>
+<hr>
+<h1 id="非线程安全集合-1"><a href="#非线程安全集合-1" class="headerlink" title="非线程安全集合"></a><table><tr><font color="#009100">非线程安全集合</font></tr></table></h1><h2 id="java-util-包下的非线程安全集合-1"><a href="#java-util-包下的非线程安全集合-1" class="headerlink" title="java.util 包下的非线程安全集合"></a>java.util 包下的非线程安全集合</h2><h2 id="1-ArrayList与LinkedList的实现和区别？-1"><a href="#1-ArrayList与LinkedList的实现和区别？-1" class="headerlink" title="1. ArrayList与LinkedList的实现和区别？"></a>1. ArrayList与LinkedList的实现和区别？</h2><blockquote>
+<ul>
+<li>结构上的区别：<br>　　　ArrayList是实现了基于动态数组的数据结构，LinkedList基于链表的数据结构。</li>
+<li>性能上的区别：</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>  <strong>查询</strong><br>  ArrayList是随机访问(random access)策略，而LinkedList是不支持快速的随机访问的（访问链表中的某个元素时，就必须从链表的一端开始沿着连接方向一个一个元素地去查找，直到找到所需的元素为止）。对一个LinkedList做随机访问所消耗的时间与这个表的大小是成比例的。而相应的，在ArrayList中进行随机访问所消耗的时间是固定的。 </p>
+</blockquote>
+<blockquote>
+<p>  <strong>增删</strong><br>  1). 若只对单条数据插入或删除，ArrayList的速度反而优于LinkedList。<br>  2). 若是批量插入或删除数据：<br>　　ArrayList 是基于数组实现的，而数组是一块连续的内存空间，当在表的前面或中间插入或删除元素时，所有已经存在的元素都会后移，这就意味着数据移动和复制上的开销，当在表的后面插入或删除元素时，ArrayList和LinkedList数据量小时速度相差无几，但数据量较大时ArrayList的速度快。在末尾插入或删除数据，arraylist的速度比linkedlist的速度反而要快。注：其实在前方插入时，ArrayList可以使用后方插入，最后再使用Collections.reverse()方法反转，速度比LinkedList快。<br>　　　LinkedList 插入或删除数据则只是简单的未这个元素分配一个记录，然后调整两个连接，在表的尾端插入数据与在任意位置插入数据是一样的，不会因为插入的位置靠前而导致插入的方法性能降低。<br>　　　遍历列表：最简便的ForEach循环并没有很好的性能表现，综合性能不如普通的迭代器，而是用for循环通过随机访问遍历列表时，ArrayList表项很好，但是LinkedList的表现却无法让人接受，甚至没有办法等待程序的结束。这是因为对LinkedList进行随机访问时，总会进行一次列表的遍历操作。性能非常差，应避免使用。</p>
+</blockquote>
+<blockquote>
+<p><strong>总结：</strong><br>　　1、在ArrayList的 中间插入或删除一个元素意味着这个列表中剩余的元素都会被移动；而在LinkedList的中间插入或删除一个元素的开销是固定的。<br>　　2、ArrayList的空间浪费主要体现在在list列表的结尾预留一定的容量空间，而LinkedList的空间花费则体现在它的每一个元素都需要消耗相当的空间。<br>　　3、LinkedList不支持高效的随机元素访问。<br>　　4、ArrayList的查询效率比较高，增删动作的效率比较差，适用于查询比较频繁，增删动作较少的元素管理的集合。<br>　　　LinkedList的查询效率低，但是增删效率很高。适用于增删动作的比较频繁，查询次数较少的元素管理集合。</p>
+</blockquote>
+<h2 id="2-HashMap-数据结构-hash冲突如何解决（链表和红黑树-扩容时机-扩容时避免rehash的优化-1"><a href="#2-HashMap-数据结构-hash冲突如何解决（链表和红黑树-扩容时机-扩容时避免rehash的优化-1" class="headerlink" title="2. HashMap 数据结构? hash冲突如何解决（链表和红黑树)? 扩容时机? 扩容时避免rehash的优化?"></a>2. HashMap 数据结构? hash冲突如何解决（链表和红黑树)? 扩容时机? 扩容时避免rehash的优化?</h2><blockquote>
+<ul>
+<li>HashMap是一种散列表，采用（数组 + 链表 + 红黑树）的存储结构</li>
+<li>hash冲突时，使用链表和红黑树来解决</li>
+<li>设置好初始化容量，初始容量（expectedSize / 0.75F + 1.0F）</li>
+</ul>
+</blockquote>
+<h2 id="3-LinkedHashMap-基本原理？-哪两种有序？-如何用来实现-LRU-缓存策略？-1"><a href="#3-LinkedHashMap-基本原理？-哪两种有序？-如何用来实现-LRU-缓存策略？-1" class="headerlink" title="3. LinkedHashMap 基本原理？ 哪两种有序？ 如何用来实现 LRU 缓存策略？"></a>3. LinkedHashMap 基本原理？ 哪两种有序？ 如何用来实现 LRU 缓存策略？</h2><blockquote>
+<ul>
+<li>LinkedHashMap可以看成是 LinkedList + HashMap</li>
+<li>LinkedHashMap继承HashMap，拥有HashMap的所有特性，并且额外增加了按一定顺序访问的特性</li>
+<li>如果accessOrder为false，则可以按插入元素的顺序遍历元素</li>
+<li>如果accessOrder为true，则可以按访问元素的顺序遍历元素</li>
+<li>如果accessOrder为true，就可以实现了 LRU 缓存策略</li>
+</ul>
+</blockquote>
+<h2 id="4-TreeMap-数据结构？key对象为什么必须要实现Compare接口？-如何用它实现一致性哈希？-1"><a href="#4-TreeMap-数据结构？key对象为什么必须要实现Compare接口？-如何用它实现一致性哈希？-1" class="headerlink" title="4. TreeMap 数据结构？key对象为什么必须要实现Compare接口？ 如何用它实现一致性哈希？"></a>4. TreeMap 数据结构？key对象为什么必须要实现Compare接口？ 如何用它实现一致性哈希？</h2><blockquote>
+<ul>
+<li>TreeMap的存储结构是一棵红黑树</li>
+<li>TreeMap中的元素是有序的，按key的顺序排列</li>
+<li>tailMap 方法可以找到大于等于目标 key 的元素，利用这一特性，可以实现一致性哈希</li>
+</ul>
+</blockquote>
+<h1 id="线程安全集合-1"><a href="#线程安全集合-1" class="headerlink" title="线程安全集合"></a><table><tr><font color="#009100">线程安全集合</font></tr></table></h1><h2 id="java-util-concurrent-包下的线程安全集合-1"><a href="#java-util-concurrent-包下的线程安全集合-1" class="headerlink" title="java.util.concurrent 包下的线程安全集合"></a>java.util.concurrent 包下的线程安全集合</h2>
       
       <!-- reward -->
       
@@ -168,7 +234,7 @@
     <footer class="article-footer">
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/bubble/" rel="tag">bubble</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/faq/" rel="tag">faq</a></li></ul>
 
 
     </footer>
